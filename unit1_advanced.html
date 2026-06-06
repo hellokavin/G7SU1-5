@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1: Measurement - Advanced Level</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container { max-width: 1800px; margin: 0 auto; }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 35px;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .unit-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            padding: 20px 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .stats { display: flex; gap: 40px; color: white; }
+        .stat { text-align: center; }
+        .stat-label { font-size: 0.85em; opacity: 0.8; text-transform: uppercase; }
+        .stat-value { font-size: 1.8em; font-weight: 700; margin-top: 5px; }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            transition: width 0.3s ease;
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(530px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .q-number {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #f5576c;
+            margin-bottom: 12px;
+        }
+
+        .q-text {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .q-media {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .q-media img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .q-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-button {
+            position: absolute;
+            font-size: 3em;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f9f9f9;
+        }
+
+        .option:hover {
+            border-color: #f5576c;
+            background: #ffe6e9;
+            transform: translateX(5px);
+        }
+
+        .option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #f5576c;
+        }
+
+        .fill-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.05em;
+            font-family: inherit;
+            margin-bottom: 15px;
+        }
+
+        .fill-input:focus {
+            outline: none;
+            border-color: #f5576c;
+            box-shadow: 0 0 0 3px rgba(245,87,108,0.1);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 11px 22px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245,87,108,0.3);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 14px;
+            border-radius: 8px;
+            display: none;
+            font-size: 0.98em;
+            line-height: 1.5;
+        }
+
+        .feedback.correct {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            color: #2e7d32;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+            display: block;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .deeper-learning {
+            background: #f0f5ff;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 8px;
+            border-left: 4px solid #f5576c;
+            font-style: italic;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: white;
+            color: #f5576c;
+            border: 2px solid #f5576c;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1.05em;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #f5576c;
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .completion {
+            text-align: center;
+            background: white;
+            padding: 60px 40px;
+            border-radius: 14px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            max-width: 600px;
+            margin: 50px auto;
+        }
+
+        .completion-icon { font-size: 5em; margin-bottom: 20px; }
+        .completion h2 { color: #f5576c; font-size: 2.5em; margin-bottom: 15px; }
+
+        .score-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .score-number { font-size: 2.5em; font-weight: 700; }
+
+        a.back-btn {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        a.back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-5px);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .questions-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="master_index.html" class="back-btn">← Back to Units</a>
+
+        <header>
+            <h1>🔥 Unit 1: Measurement in Science</h1>
+            <p style="font-size: 1.2em; opacity: 0.95;">Advanced Level - 50 Questions</p>
+        </header>
+
+        <div class="unit-info">
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">Progress</div>
+                    <div class="stat-value"><span id="currentQ">1</span>/50</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value"><span id="score">0</span></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-value"><span id="accuracy">0</span>%</div>
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="quizContainer" class="questions-grid"></div>
+        <div id="completionContainer"></div>
+
+        <div class="controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousScreen()" disabled>← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextScreen()" style="display:none;">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            { q: "Q1", type: "MC", text: "If density = mass/volume, and you increase volume while keeping mass constant, density will:", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Density_column.jpg/640px-Density_column.jpg", options: ["Increase", "Decrease", "Stay the same", "Become zero"], correct: 1, explanation: "Density is inversely proportional to volume. Increasing volume decreases density.", deeper: "This is why hot air balloons rise—heating air decreases its density. Understanding inverse relationships is crucial for advanced physics." },
+            
+            { q: "Q2", type: "MC", text: "Why does uncertainty exist in ALL measurements, even with perfect instruments?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Precision_and_accuracy.svg/640px-Precision_and_accuracy.svg.png", options: ["Instruments are poorly made", "Physical limitation of measurement (particles have uncertainty)", "Observers are careless", "It only happens with old equipment"], correct: 1, explanation: "Heisenberg's Uncertainty Principle: You cannot know both position and momentum with perfect precision.", deeper: "This quantum mechanical principle revolutionized physics. At macroscopic scales, it's negligible, but at atomic scales, it's fundamental." },
+
+            { q: "Q3", type: "MC", text: "A measurement of 5.00 cm has how many significant figures?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Vernier_scale.svg/640px-Vernier_scale.svg.png", options: ["1", "2", "3", "4"], correct: 2, explanation: "All non-zero digits and zeros between/after decimals are significant. 5.00 = 3 sig figs.", deeper: "Significant figures tell us measurement precision. 5 cm (1 sig fig) vs 5.00 cm (3 sig figs) show different precision levels." },
+
+            { q: "Q4", type: "FIB", text: "The _______ principle states you cannot measure something without affecting it.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Quantum_mechanics.jpg/640px-Quantum_mechanics.jpg", answer: "observer effect", explanation: "Observing a system changes it. Light photons, for example, affect particle positions.", deeper: "This is why quantum mechanics is counterintuitive. The act of measurement fundamentally changes reality at quantum scales." },
+
+            { q: "Q5", type: "MC", text: "If two measurements differ by 15%, which is most likely true?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Accuracy_and_precision.svg/640px-Accuracy_and_precision.svg.png", options: ["Both are equally accurate", "One has systematic error", "One is precise but inaccurate", "Random error accounts for difference"], correct: 2, explanation: "15% difference suggests one measurement is consistently wrong (systematic) while appearing precise.", deeper: "Systematic errors persist across trials. A broken scale might always read 5% high—precise but inaccurate." },
+
+            { q: "Q6", type: "MC", text: "What is the absolute uncertainty when averaging measurements of 10.1, 10.3, 10.2, 10.4, 10.0 cm?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Measurement_error.png/640px-Measurement_error.png", options: ["0.1 cm", "±0.2 cm", "±0.05 cm", "±0.14 cm"], correct: 3, explanation: "Standard deviation ≈ 0.14 cm. This represents data spread, not instrument precision.", deeper: "Standard deviation quantifies measurement variation. It's different from uncertainty of individual readings. Both matter in error analysis." },
+
+            { q: "Q7", type: "FIB", text: "The SI system is based on _______ fundamental quantities from which all others are derived.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/SI_base_units.svg/640px-SI_base_units.svg.png", answer: "seven", explanation: "7 base units: metre, kilogram, second, ampere, kelvin, mole, candela.", deeper: "All other units (Newton, Joule, Watt) are derived from these 7. Understanding this hierarchy helps with unit conversions." },
+
+            { q: "Q8", type: "MC", text: "A Vernier calliper shows 5.23 cm. What's the resolution of this instrument?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Vernier_scale_diagram.svg/640px-Vernier_scale_diagram.svg.png", options: ["0.1 cm", "0.01 cm", "0.001 cm", "0.05 cm"], correct: 1, explanation: "Vernier callipers measure to 0.01 cm (0.1 mm) precision. Micrometers measure to 0.001 cm.", deeper: "Different instruments have different resolutions. Choosing the right tool depends on needed precision." },
+
+            { q: "Q9", type: "MC", text: "Why is it impossible to measure 'absolute' values in physics?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Relativity.jpg/640px-Relativity.jpg", options: ["Instruments aren't good enough", "All measurements are relative to a reference frame", "Humans can't measure accurately", "Physics doesn't allow absolute measurements"], correct: 1, explanation: "Einstein's Relativity: All measurements depend on observer's reference frame. There's no absolute space or time.", deeper: "This revolutionized physics. Motion, time, length all depend on reference frame. GPS accounts for relativistic effects!" },
+
+            { q: "Q10", type: "FIB", text: "When data is plotted, the _______ of the best-fit line represents the relationship between variables.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Linear_regression.svg/640px-Linear_regression.svg.png", answer: "slope", explanation: "Slope shows rate of change. y = mx + b, where m is slope.", deeper: "Graphical analysis reveals relationships. Slope can have physical meaning (e.g., acceleration is slope of v-t graph)." },
+
+            { q: "Q11", type: "MC", text: "A balance reads 10.0 g but true mass is 9.85 g. This is an example of:", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Triple_beam_balance.jpg/640px-Triple_beam_balance.jpg", options: ["Precision error", "Random error", "Systematic error", "Parallax error"], correct: 2, explanation: "Consistent 0.15 g error shows systematic error (instrument calibration issue).", deeper: "Systematic errors can often be corrected. If you know an instrument reads 0.15 g high, subtract this from all readings." },
+
+            { q: "Q12", type: "MC", text: "Why must measurements always include units?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/SI_Units.jpg/640px-SI_Units.jpg", options: ["It's just a convention", "Numbers are meaningless without units", "Units provide reference scale", "Both B and C"], correct: 3, explanation: "5 without units is meaningless. 5 cm, 5 m, 5 km are completely different quantities.", deeper: "Units carry dimensional information. Dimensional analysis helps check if calculations are correct." },
+
+            { q: "Q13", type: "FIB", text: "The _______ effect occurs when measurements are taken near an observer's eye level versus at the proper angle.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Parallax_effect.svg/640px-Parallax_effect.svg.png", answer: "parallax", explanation: "Parallax causes misreading due to viewing angle. Always read at eye level.", deeper: "Parallax error is a common systematic error in labs. It's why proper measurement technique is so important." },
+
+            { q: "Q14", type: "MC", text: "If an experiment requires ±0.01 g precision, which would be MOST appropriate?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Electronic_balance.jpg/640px-Electronic_balance.jpg", options: ["Triple beam balance (±0.1 g)", "Digital balance (±0.01 g)", "Top-loading balance (±1 g)", "Spring scale (±5 g)"], correct: 1, explanation: "Choose instrument with precision matching or exceeding requirements. ±0.01 g balance meets the need.", deeper: "Proper instrument selection is crucial. Using insufficient precision wastes experimental effort." },
+
+            { q: "Q15", type: "MC", text: "When multiplying 2.5 × 3.42, result should have how many significant figures?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Significant_figures.png/640px-Significant_figures.png", options: ["2", "3", "4", "5"], correct: 0, explanation: "Result has sig figs of least precise number: 2.5 (2 sig figs) × 3.42 (3 sig figs) = 8.6 (2 sig figs)", deeper: "Sig fig rules prevent false precision. Your answer can't be more precise than your measurements." },
+
+            { q: "Q16", type: "FIB", text: "In _______ analysis, you check if equations are dimensionally consistent.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Dimensional_analysis.jpg/640px-Dimensional_analysis.jpg", answer: "dimensional", explanation: "Force (N) = mass (kg) × acceleration (m/s²). Dimensions must match on both sides.", deeper: "Dimensional analysis is powerful. You can derive formulas and check if your algebra is correct just by analyzing units!" },
+
+            { q: "Q17", type: "MC", text: "Why is the Kelvin scale preferred in scientific calculations?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Temperature_scales.svg/640px-Temperature_scales.svg.png", options: ["It's larger", "It avoids negative numbers", "It's directly proportional to particle kinetic energy", "Historical reasons"], correct: 2, explanation: "Kelvin's zero is absolute zero. Temperature ratios in Kelvin are proportional to kinetic energy.", deeper: "In gas laws and thermodynamics, you MUST use Kelvin. Celsius ratios are meaningless (0°C ÷ 10°C ≠ half the kinetic energy)." },
+
+            { q: "Q18", type: "MC", text: "A measurement with high precision but low accuracy suggests:", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Accuracy_and_precision.svg/640px-Accuracy_and_precision.svg.png", options: ["Random error only", "Instrument needs calibration (systematic error)", "Excellent measurement", "Observer is careless"], correct: 1, explanation: "Consistent wrong readings = systematic error. Recalibrate or adjust for zero error.", deeper: "This scenario is common in labs. Students often blame themselves when it's actually the equipment!" },
+
+            { q: "Q19", type: "FIB", text: "The _______ is the smallest division an instrument can measure and determines its resolution.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Measurement_scale.jpg/640px-Measurement_scale.jpg", answer: "least count", explanation: "A ruler marked in mm has least count of 1 mm. Vernier callipers have 0.01 mm least count.", deeper: "Least count determines precision. You can't be more precise than an instrument's least count." },
+
+            { q: "Q20", type: "MC", text: "In error propagation, when ADDING quantities, you ADD their:", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Error_propagation.png/640px-Error_propagation.png", options: ["Uncertainties directly", "Percentage uncertainties", "Absolute uncertainties (in quadrature)", "Relative uncertainties"], correct: 2, explanation: "For addition/subtraction: add absolute uncertainties in quadrature √(ΔA² + ΔB²)", deeper: "Error propagation is advanced! For multiplication/division, you add percentage uncertainties. This is crucial for experimental design." },
+
+            { q: "Q21", type: "MC", text: "What is the relationship between precision and number of significant figures?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Significant_figures_precision.png/640px-Significant_figures_precision.png", options: ["No relationship", "More sig figs = higher precision", "More sig figs = lower accuracy", "Inversely proportional"], correct: 1, explanation: "More significant figures indicate measurement precision. 1.234 g is more precise than 1.2 g.", deeper: "Sig figs communicate precision. They tell others how much they can trust your measurement." },
+
+            { q: "Q22", type: "FIB", text: "A _______ is a systematic error that occurs due to personal bias in reading instruments.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Observer_bias.jpg/640px-Observer_bias.jpg", answer: "personal error", explanation: "Always positioning eye at same angle reduces this. Double-blind experiments avoid it.", deeper: "This is why scientific method emphasizes objectivity. Personal errors can be minimized with proper technique." },
+
+            { q: "Q23", type: "MC", text: "When graphing experimental data, what does a large scatter of points around the line indicate?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Scatter_plot_with_trend.svg/640px-Scatter_plot_with_trend.svg.png", options: ["Strong relationship", "High measurement uncertainty (random error)", "Systematic error only", "No relationship exists"], correct: 1, explanation: "Scatter around a line shows measurement precision. More scatter = more uncertainty.", deeper: "Visual representation helps identify error sources. Systematic errors create lines offset from origin; random errors create scatter." },
+
+            { q: "Q24", type: "MC", text: "If a calculation yields 2.3456 but your data has ±0.1 uncertainty, you should report:", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Significant_figures_rounding.jpg/640px-Significant_figures_rounding.jpg", options: ["2.3456", "2.3", "2.35", "2.3 ± 0.1"], correct: 3, explanation: "Report value with uncertainty. ±0.1 means uncertainty in first decimal place.", deeper: "Always include uncertainty with results. This tells readers the reliability of your measurement." },
+
+            { q: "Q25", type: "FIB", text: "The _______ method uses the change in water level to measure volume of irregular objects.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Water_displacement.jpg/640px-Water_displacement.jpg", answer: "displacement", explanation: "Place object in water, measure level change. Volume = change in level.", deeper: "Archimedes' Principle: Displaced water volume equals object volume. This works for any solid that doesn't dissolve." },
+
+            { q: "Q26", type: "MC", text: "Why can't random errors be completely eliminated?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Random_error.png/640px-Random_error.png", options: ["Instruments are faulty", "They're inherent to measurement process", "Observers are incompetent", "It's a choice"], correct: 1, explanation: "Random errors arise from unpredictable variations in measurements. Can only be minimized through averaging.", deeper: "Even with perfect equipment, quantum mechanics shows measurement has inherent uncertainty. Averaging reduces random error." },
+
+            { q: "Q27", type: "MC", text: "A student measures a 10 cm standard and gets 9.8, 9.9, 10.1, 10.0, 10.2 cm. Assessment?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Measurement_standards.jpg/640px-Measurement_standards.jpg", options: ["Poor accuracy and precision", "Good accuracy, poor precision", "Good precision, good accuracy", "Can't determine"], correct: 2, explanation: "Average = 10.0 cm (accurate). Small range around 10 (precise). Both good!", deeper: "This is ideal! Accurate AND precise measurements. The student's technique is excellent." },
+
+            { q: "Q28", type: "FIB", text: "The _______ is the range of values that likely contains the true value.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Confidence_interval.svg/640px-Confidence_interval.svg.png", answer: "confidence interval", explanation: "Written as (value ± uncertainty) at certain confidence level (e.g., 95%)", deeper: "Confidence intervals are more informative than single values. They show measurement reliability." },
+
+            { q: "Q29", type: "MC", text: "What does 'instrumental uncertainty' refer to?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Instrument_precision.jpg/640px-Instrument_precision.jpg", options: ["Measurement doubt about what to measure", "Limit of precision built into instrument", "Error due to broken equipment", "Atmospheric interference"], correct: 1, explanation: "Smallest division ÷ 2 = instrumental uncertainty. Ruler: ±0.05 cm, Vernier: ±0.005 cm", deeper: "Every instrument has built-in limits. You can't measure more precisely than instrument allows." },
+
+            { q: "Q30", type: "MC", text: "In scientific notation, 0.00305 should be written as:", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Scientific_notation.jpg/640px-Scientific_notation.jpg", options: ["3.05 × 10⁻³", "3.05 × 10³", "30.5 × 10⁻⁴", "305 × 10⁻⁵"], correct: 0, explanation: "Move decimal 3 places right: 3.05 × 10⁻³. Exponent = number of places moved left (negative).", deeper: "Scientific notation standardizes large/small numbers. It also clarifies significant figures." },
+
+            { q: "Q31", type: "FIB", text: "The _______ coefficient shows strength of relationship between two variables (ranges 0 to 1).", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Correlation_coefficient.svg/640px-Correlation_coefficient.svg.png", answer: "correlation", explanation: "r = 0 (no relationship), r = 1 (perfect correlation)", deeper: "Correlation doesn't prove causation! Both could be caused by third variable. Critical thinking essential." },
+
+            { q: "Q32", type: "MC", text: "Why must you always subtract measured readings from zero position of instrument?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Zero_error.jpg/640px-Zero_error.jpg", options: ["Tradition", "It doesn't matter", "Prevents systematic error from worn instrument edges", "Makes math easier"], correct: 2, explanation: "Worn ruler edges add systematic error. Always use zero mark as reference.", deeper: "This is why zero-error corrections are taught! They prevent consistent mismeasurement." },
+
+            { q: "Q33", type: "MC", text: "A dataset has mean = 10.0 and standard deviation = 2.0. What percentage lies within ±1 SD?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Normal_distribution.svg/640px-Normal_distribution.svg.png", options: ["50%", "68%", "95%", "99.7%"], correct: 1, explanation: "Normal distribution: 68% within 1 SD, 95% within 2 SD, 99.7% within 3 SD (68-95-99.7 rule)", deeper: "This assumes normal distribution. Most experimental data roughly follows this pattern." },
+
+            { q: "Q34", type: "FIB", text: "A _______ plot shows relationship between two variables and helps identify patterns.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Scatter_plot.svg/640px-Scatter_plot.svg.png", answer: "scatter", explanation: "Points plotted individually. Trend lines added to show relationship.", deeper: "Scatter plots are first step in data analysis. Visually see correlations before calculations." },
+
+            { q: "Q35", type: "MC", text: "Why is averaging multiple measurements better than taking one?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Multiple_measurements.jpg/640px-Multiple_measurements.jpg", options: ["Longer results", "Reduces random error", "Makes experiment more difficult", "Increases systematic error"], correct: 1, explanation: "Random errors scatter both high and low. Averaging cancels them partially.", deeper: "Standard practice: take 3-5 measurements, calculate mean. More measurements improve reliability." },
+
+            { q: "Q36", type: "MC", text: "What does 'extrapolation' mean in graphing?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Extrapolation.svg/640px-Extrapolation.svg.png", options: ["Drawing line through points", "Extending line beyond measured data", "Finding average", "Measuring slope"], correct: 1, explanation: "Extrapolation predicts outside measured range. More unreliable than interpolation.", deeper: "Scientists use extrapolation carefully. Assumptions change beyond measured range!" },
+
+            { q: "Q37", type: "FIB", text: "The _______ is the constant difference between measured and true values (systematic).", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Measurement_bias.jpg/640px-Measurement_bias.jpg", answer: "bias", explanation: "Bias = systematic error. If you know the bias, you can correct measurements.", deeper: "Knowing your instrument's bias helps improve accuracy. This is called 'bias correction'." },
+
+            { q: "Q38", type: "MC", text: "Which statement about precision is correct?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Precision_measurement.jpg/640px-Precision_measurement.jpg", options: ["Same as accuracy", "Depends on observer", "Determined by instrument design", "Can't be improved"], correct: 2, explanation: "Precision is built into instrument. Better instruments = higher precision.", deeper: "You can't make a ruler more precise just by being careful. Upgrade to better instrument for more precision." },
+
+            { q: "Q39", type: "MC", text: "In logarithmic scale graphs, what does each unit increase represent?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Logarithmic_scale.svg/640px-Logarithmic_scale.svg.png", options: ["Linear increase", "Multiplication by 10", "Square of previous", "No pattern"], correct: 1, explanation: "Log scale: each step = ×10. Used for ranges spanning many orders of magnitude.", deeper: "pH scale, Richter scale, decibels all use log scales. Compresses huge ranges into manageable graphs." },
+
+            { q: "Q40", type: "FIB", text: "The _______ of a measurement describes how close it is to the accepted/true value.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Accuracy_definition.jpg/640px-Accuracy_definition.jpg", answer: "accuracy", explanation: "Accuracy ≠ Precision. You need both for good measurements.", deeper: "Accurate = close to truth. Precise = consistent. Get both or your experiment fails!" },
+
+            { q: "Q41", type: "MC", text: "What percentage increase occurs when 50 cm becomes 60 cm?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Percentage_change.jpg/640px-Percentage_change.jpg", options: ["10%", "20%", "16.7%", "83.3%"], correct: 1, explanation: "Percentage change = (change/original) × 100 = (10/50) × 100 = 20%", deeper: "Percentage changes are important in measurements. Always calculate relative to original." },
+
+            { q: "Q42", type: "FIB", text: "The _______ equation describes how measurement error propagates through calculations.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Error_propagation_formula.png/640px-Error_propagation_formula.png", answer: "propagation", explanation: "Complex formula for combining uncertainties in calculations.", deeper: "Advanced topic! Error propagation prevents underestimating final uncertainty." },
+
+            { q: "Q43", type: "MC", text: "What is meant by 'order of magnitude'?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Order_of_magnitude.jpg/640px-Order_of_magnitude.jpg", options: ["Exact value", "Power of 10 nearest to value", "Measurement uncertainty", "Instrument precision"], correct: 1, explanation: "Order of magnitude of 273 is 10³ (hundred level). 5,847 ≈ 10⁴ (ten thousand level).", deeper: "Order of magnitude helps estimate without exact calculations. Useful for back-of-envelope physics!" },
+
+            { q: "Q44", type: "MC", text: "Why should you avoid zero error in measuring instruments?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Zero_error_example.jpg/640px-Zero_error_example.jpg", options: ["It's not important", "Creates consistent systematic error", "Makes measurements random", "Increases precision"], correct: 1, explanation: "Zero error = constant wrong offset. If not corrected, ALL measurements are systematically wrong.", deeper: "Check zero position BEFORE measuring! Zero errors are preventable with proper technique." },
+
+            { q: "Q45", type: "FIB", text: "The _______ is the smallest unit of measurement your instrument can reliably show.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Resolution_measurement.jpg/640px-Resolution_measurement.jpg", answer: "resolution", explanation: "Resolution determines maximum precision. Better resolution = better precision.", deeper: "Resolution and accuracy are different. Great resolution won't help if instrument is uncalibrated (inaccurate)." },
+
+            { q: "Q46", type: "MC", text: "In a poorly designed experiment, what's the consequence of large random error?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Large_random_error.png/640px-Large_random_error.png", options: ["Data is still accurate", "Results are unreliable and hard to interpret", "Systematic error increases", "No consequence"], correct: 1, explanation: "Large random error obscures true relationship between variables.", deeper: "This is why experimental design is crucial! Bad measurement technique ruins good experimental idea." },
+
+            { q: "Q47", type: "MC", text: "What does ISO 9001 ensure in measurement standards?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/ISO_certification.jpg/640px-ISO_certification.jpg", options: ["Cheap instruments", "Consistent quality and traceability", "Largest measurements", "No systematic errors"], correct: 1, explanation: "ISO standards ensure instruments are calibrated and reliable.", deeper: "Professional labs use ISO-calibrated equipment. Ensures measurements worldwide are comparable." },
+
+            { q: "Q48", type: "FIB", text: "A _______ is a marked straight edge used for measuring length, graduated in cm and mm.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Ruler_measurement.jpg/640px-Ruler_measurement.jpg", answer: "ruler", explanation: "Most basic measuring instrument. Precision ±0.05 cm with careful measurement.", deeper: "Despite being simple, using a ruler correctly requires technique. Always read at eye level to avoid parallax!" },
+
+            { q: "Q49", type: "MC", text: "Why is Kelvin scale essential for gas laws?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Gas_law_calculations.jpg/640px-Gas_law_calculations.jpg", options: ["Historical reason", "It's larger numbers", "Absolute zero = zero kinetic energy, making ratios meaningful", "Scientists prefer it"], correct: 2, explanation: "PV/T must use absolute temperature (Kelvin). Celsius ratios don't represent kinetic energy ratios.", deeper: "This is why PV = nRT uses K! Temperature ratios in Kelvin are proportional to particle energy ratios." },
+
+            { q: "Q50", type: "MC", text: "What's the best strategy for reducing measurement error in an experiment?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Best_measurement_practice.jpg/640px-Best_measurement_practice.jpg", options: ["Use one measurement", "Use best instrument available + take multiple readings + calculate average", "Estimate instead of measure", "Rush to get results"], correct: 1, explanation: "Proper technique: right tool + multiple trials + averaging = best results.", deeper: "This combines everything: good instrument (less random error), proper technique (less systematic), averaging (reduces randomness)." }
+        ];
+
+        let currentScreen = 0;
+        let score = 0;
+        const questionsPerScreen = 3;
+        const totalQuestions = quizData.length;
+
+        function renderScreen() {
+            const startIdx = currentScreen * questionsPerScreen;
+            const endIdx = Math.min(startIdx + questionsPerScreen, totalQuestions);
+            const questionsToShow = quizData.slice(startIdx, endIdx);
+
+            let html = '';
+            questionsToShow.forEach((q, idx) => {
+                const qIdx = startIdx + idx;
+                html += `
+                    <div class="question-card">
+                        <div class="q-number">${q.q}</div>
+                        <div class="q-text">${q.text}</div>
+                        <div class="q-media">
+                            <img src="${q.image}" alt="Question image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImage%3C/text%3E%3C/svg%3E'" />
+                        </div>
+                        
+                        <div id="options-${qIdx}">
+                `;
+
+                if (q.type === "MC") {
+                    html += '<div class="options">';
+                    q.options.forEach((opt, i) => {
+                        html += `
+                            <label class="option">
+                                <input type="radio" name="answer-${qIdx}" value="${i}">
+                                <span>${opt}</span>
+                            </label>
+                        `;
+                    });
+                    html += '</div>';
+                } else if (q.type === "FIB") {
+                    html += `<input type="text" class="fill-input" id="fib-${qIdx}" placeholder="Type your answer...">`;
+                }
+
+                html += `
+                        </div>
+                        <button class="submit-btn" onclick="submitAnswer(${qIdx})">Submit</button>
+                        <div class="feedback" id="feedback-${qIdx}"></div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('quizContainer').innerHTML = html;
+            updateProgress();
+            updateButtons();
+        }
+
+        function submitAnswer(qIdx) {
+            const q = quizData[qIdx];
+            let isCorrect = false;
+
+            if (q.type === "MC") {
+                const selected = document.querySelector(`input[name="answer-${qIdx}"]:checked`);
+                if (!selected) {
+                    alert('Please select an option!');
+                    return;
+                }
+                isCorrect = parseInt(selected.value) === q.correct;
+            } else if (q.type === "FIB") {
+                const input = document.getElementById(`fib-${qIdx}`);
+                isCorrect = input.value.toLowerCase().trim() === q.answer.toLowerCase().trim();
+            }
+
+            const feedbackEl = document.getElementById(`feedback-${qIdx}`);
+            if (isCorrect) {
+                score++;
+                feedbackEl.className = 'feedback correct';
+                feedbackEl.innerHTML = `
+                    <div class="feedback-title">✅ Correct!</div>
+                    <p>${q.explanation}</p>
+                    <div class="deeper-learning">🧠 ${q.deeper}</div>
+                `;
+            } else {
+                feedbackEl.className = 'feedback incorrect';
+                const correctAnswer = q.type === "MC" ? q.options[q.correct] : q.answer;
+                feedbackEl.innerHTML = `
+                    <div class="feedback-title">❌ Incorrect</div>
+                    <p><strong>Correct answer:</strong> ${correctAnswer}</p>
+                    <p>${q.explanation}</p>
+                    <div class="deeper-learning">🧠 ${q.deeper}</div>
+                `;
+            }
+
+            document.querySelector(`#options-${qIdx}`).style.pointerEvents = 'none';
+            document.querySelector(`button[onclick="submitAnswer(${qIdx})"]`).disabled = true;
+            updateScore();
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            const answered = Math.min((currentScreen + 1) * questionsPerScreen, totalQuestions);
+            const accuracy = Math.round((score / answered) * 100);
+            document.getElementById('accuracy').textContent = accuracy;
+        }
+
+        function nextScreen() {
+            if (currentScreen < Math.ceil(totalQuestions / questionsPerScreen) - 1) {
+                currentScreen++;
+                renderScreen();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            } else {
+                showCompletion();
+            }
+        }
+
+        function previousScreen() {
+            if (currentScreen > 0) {
+                currentScreen--;
+                renderScreen();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentScreen * questionsPerScreen + 1) / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentQ').textContent = Math.min(currentScreen * questionsPerScreen + 1, totalQuestions);
+            document.getElementById('prevBtn').disabled = currentScreen === 0;
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function showCompletion() {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            let message = '';
+            if (percentage >= 90) message = '🌟 EXCEPTIONAL! Advanced mastery!';
+            else if (percentage >= 80) message = '🔥 EXCELLENT! You think like a scientist!';
+            else if (percentage >= 70) message = '👍 GREAT! Keep pushing boundaries!';
+            else message = '📚 Keep learning advanced concepts!';
+
+            document.getElementById('quizContainer').innerHTML = '';
+            document.getElementById('completionContainer').innerHTML = `
+                <div class="completion">
+                    <div class="completion-icon">🏆</div>
+                    <h2>Unit 1 Advanced Complete!</h2>
+                    <div class="score-box">
+                        <div>Your Score</div>
+                        <div class="score-number">${score}/50</div>
+                        <div>${percentage}%</div>
+                    </div>
+                    <p>${message}</p>
+                    <a href="master_index.html" style="display:inline-block; color: #f5576c; text-decoration: none; margin-top: 20px; padding: 12px 30px; border: 2px solid #f5576c; border-radius: 8px; font-weight: 600;">← Back to Units</a>
+                </div>
+            `;
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        renderScreen();
+    </script>
+</body>
+</html>

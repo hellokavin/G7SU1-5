@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2: Cells - Advanced Level</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); min-height: 100vh; padding: 30px; }
+        .container { max-width: 1800px; margin: 0 auto; }
+        header { text-align: center; color: white; margin-bottom: 35px; }
+        h1 { font-size: 2.8em; margin-bottom: 10px; font-weight: 700; }
+        .unit-info { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.1); padding: 20px 30px; border-radius: 10px; backdrop-filter: blur(10px); margin-bottom: 20px; }
+        .stats { display: flex; gap: 40px; color: white; }
+        .stat { text-align: center; }
+        .stat-label { font-size: 0.85em; opacity: 0.8; text-transform: uppercase; }
+        .stat-value { font-size: 1.8em; font-weight: 700; margin-top: 5px; }
+        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; margin-top: 10px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #f093fb, #f5576c); transition: width 0.3s ease; }
+        .questions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(530px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .question-card { background: white; border-radius: 14px; padding: 25px; box-shadow: 0 15px 45px rgba(0,0,0,0.2); animation: fadeInUp 0.5s ease-out; }
+        .q-number { font-size: 1.8em; font-weight: 700; color: #f5576c; margin-bottom: 12px; }
+        .q-text { font-size: 1.15em; font-weight: 600; color: #333; margin-bottom: 15px; line-height: 1.6; }
+        .q-media { width: 100%; height: 180px; background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 2px solid #ddd; overflow: hidden; }
+        .q-media img { max-width: 100%; max-height: 100%; object-fit: cover; }
+        .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        .option { display: flex; align-items: center; padding: 12px 14px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.3s; background: #f9f9f9; }
+        .option:hover { border-color: #f5576c; background: #ffe6e9; transform: translateX(5px); }
+        .option input[type="radio"] { width: 18px; height: 18px; margin-right: 12px; cursor: pointer; accent-color: #f5576c; }
+        .fill-input { width: 100%; padding: 10px 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 1.05em; font-family: inherit; margin-bottom: 15px; }
+        .fill-input:focus { outline: none; border-color: #f5576c; box-shadow: 0 0 0 3px rgba(245,87,108,0.1); }
+        .submit-btn { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; padding: 11px 22px; border-radius: 8px; font-size: 0.95em; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245,87,108,0.3); }
+        .submit-btn:disabled { opacity: 0.6; }
+        .feedback { margin-top: 15px; padding: 14px; border-radius: 8px; display: none; font-size: 0.98em; line-height: 1.5; }
+        .feedback.correct { background: #e8f5e9; border-left: 4px solid #4CAF50; color: #2e7d32; display: block; }
+        .feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; color: #c62828; display: block; }
+        .feedback-title { font-weight: 700; margin-bottom: 6px; }
+        .deeper-learning { background: #f0f5ff; padding: 10px; border-radius: 6px; margin-top: 8px; border-left: 4px solid #f5576c; font-style: italic; color: #555; font-size: 0.95em; }
+        .controls { display: flex; justify-content: center; gap: 15px; margin-top: 40px; flex-wrap: wrap; }
+        .nav-btn { background: white; color: #f5576c; border: 2px solid #f5576c; padding: 12px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1.05em; transition: all 0.3s; }
+        .nav-btn:hover { background: #f5576c; color: white; }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .completion { text-align: center; background: white; padding: 60px 40px; border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-width: 600px; margin: 50px auto; }
+        .completion-icon { font-size: 5em; margin-bottom: 20px; }
+        .completion h2 { color: #f5576c; font-size: 2.5em; margin-bottom: 15px; }
+        .score-box { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 10px; margin: 25px 0; }
+        .score-number { font-size: 2.5em; font-weight: 700; }
+        a.back-btn { display: inline-block; color: white; text-decoration: none; margin-bottom: 20px; font-size: 1.1em; padding: 10px 20px; background: rgba(255,255,255,0.2); border-radius: 8px; transition: all 0.3s; }
+        a.back-btn:hover { background: rgba(255,255,255,0.3); transform: translateX(-5px); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 1200px) { .questions-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="master_index.html" class="back-btn">← Back to Units</a>
+        <header>
+            <h1>🔥 Unit 2: Cells & Living Things</h1>
+            <p style="font-size: 1.2em; opacity: 0.95;">Advanced Level - 50 Questions</p>
+        </header>
+        <div class="unit-info">
+            <div class="stats">
+                <div class="stat"><div class="stat-label">Progress</div><div class="stat-value"><span id="currentQ">1</span>/50</div></div>
+                <div class="stat"><div class="stat-label">Score</div><div class="stat-value"><span id="score">0</span></div></div>
+                <div class="stat"><div class="stat-label">Accuracy</div><div class="stat-value"><span id="accuracy">0</span>%</div></div>
+            </div>
+            <div style="flex: 1;"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+        </div>
+        <div id="quizContainer" class="questions-grid"></div>
+        <div id="completionContainer"></div>
+        <div class="controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousScreen()" disabled>← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextScreen()" style="display:none;">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            { q: "Q1", type: "MC", text: "Why do high-energy cells like neurons have abundant mitochondria?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Mitochondrion_structure.svg/640px-Mitochondrion_structure.svg.png", options: ["They need more ribosomes", "They require massive ATP production for rapid signaling", "They have more DNA", "They lack lysosomes"], correct: 1, explanation: "Neurons demand continuous ATP for maintaining electrical gradients and neurotransmitter synthesis.", deeper: "This explains why brain damage leads to energy depletion. Cancer cells also have altered mitochondrial function - a key area of research." },
+            
+            { q: "Q2", type: "MC", text: "Why can't cells grow infinitely large despite unlimited resources?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Cell_size_limits.svg/640px-Cell_size_limits.svg.png", options: ["Laws of physics prevent it", "Surface area-to-volume ratio limits nutrient diffusion", "Ribosomes have size limits", "DNA can't replicate"], correct: 1, explanation: "As cells grow, volume increases faster than surface area. Nutrients can't diffuse fast enough to support the interior.", deeper: "This is why cells must divide! Giant cells would die from oxygen starvation in their cores. Some cancers overcome this by needing less oxygen." },
+
+            { q: "Q3", type: "FIB", text: "The _______ theory explains how eukaryotic mitochondria and chloroplasts originated.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Endosymbiotic_theory.svg/640px-Endosymbiotic_theory.svg.png", answer: "endosymbiotic", explanation: "Ancient prokaryotes were engulfed by larger cells, becoming organelles. Evidence: their own DNA!", deeper: "Mitochondrial DNA proves this! You inherit mitochondrial DNA only from your mother. This revolutionized evolution understanding." },
+
+            { q: "Q4", type: "MC", text: "How does cyanide poisoning affect cells despite not directly touching mitochondria?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Cellular_respiration.svg/640px-Cellular_respiration.svg.png", options: ["Blocks protein synthesis", "Blocks cytochrome c oxidase, stopping ATP production", "Dissolves cell membranes", "Prevents DNA replication"], correct: 1, explanation: "Cyanide blocks the electron transport chain, halting oxidative phosphorylation and ATP synthesis.", deeper: "This shows how one enzyme blockage cascades into cell death. Brain and heart cells die first due to high ATP demands." },
+
+            { q: "Q5", type: "MC", text: "Why do plant cells maintain high turgor pressure despite hypotonic environments?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Plant_cell_vacuole.svg/640px-Plant_cell_vacuole.svg.png", options: ["Cell wall prevents bursting", "They have special proteins", "They produce more ATP", "They have no cell membrane"], correct: 0, explanation: "The rigid cell wall prevents the cell from bursting, maintaining structural integrity and firmness.", deeper: "Without turgor pressure, plants wilt. Wilting is a sign of water stress, not cell death. A plant can often recover by watering." },
+
+            { q: "Q6", type: "MC", text: "What evolutionary advantage did prokaryotes gain by becoming organelles?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Endosymbiotic_theory.svg/640px-Endosymbiotic_theory.svg.png", options: ["Protection and nutrient sharing", "Ability to photosynthesis", "Larger size", "No advantage"], correct: 0, explanation: "Living inside eukaryotic cells provided protection and metabolic cooperation, leading to specialization.", deeper: "This partnership between cells created the most complex organisms we see today. Symbiosis built complexity!" },
+
+            { q: "Q7", type: "FIB", text: "The _______ is a DNA-containing organelle believed to have originated from ancient cyanobacteria.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Chloroplast_structure.svg/640px-Chloroplast_structure.svg.png", answer: "chloroplast", explanation: "Chloroplast DNA, ribosomes, and reproduction method closely resemble prokaryotes.", deeper: "Chloroplasts can reproduce independently! They have their own ribosomes that are prokaryotic-type ribosomes." },
+
+            { q: "Q8", type: "MC", text: "Why does the nuclear envelope break down during cell division?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Mitosis_4.jpeg/640px-Mitosis_4.jpeg", options: ["To release chromosomes", "To prevent chromosome tangling", "To allow spindle fibers to access chromosomes", "All of the above"], correct: 3, explanation: "Multiple reasons: chromosome accessibility, spindle fiber attachment, and preventing tangling during separation.", deeper: "This is why mistakes in mitosis cause cancer. A single cell division error can propagate into thousands of abnormal cells." },
+
+            { q: "Q9", type: "MC", text: "How does apoptosis (programmed cell death) benefit multicellular organisms?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Apoptosis.svg/640px-Apoptosis.svg.png", options: ["Removes damaged cells before they become cancerous", "Creates tissue shape during development", "Clears out old cells", "All of the above"], correct: 3, explanation: "Apoptosis is controlled death removing harmful cells, shaping tissues, and maintaining homeostasis.", deeper: "Cancer cells often disable apoptosis genes. This is why cancer develops - cells refuse to die when they should." },
+
+            { q: "Q10", type: "MC", text: "Why are telomeres crucial for preventing cancer?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Telomere_shortening.svg/640px-Telomere_shortening.svg.png", options: ["They store energy", "They limit cell divisions, preventing unlimited growth", "They repair DNA", "They make proteins"], correct: 1, explanation: "Telomeres shorten with each division, eventually triggering cell death. Cancer cells reactivate telomerase to become immortal.", deeper: "Telomerase is usually inactive in adult cells. Cancer cells often reactivate it. This is an active area of cancer research!" },
+
+            { q: "Q11", type: "FIB", text: "The _______ is the maximum number of times a normal cell can divide before senescence.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Hayflick_limit.svg/640px-Hayflick_limit.svg.png", answer: "Hayflick limit", explanation: "Most human cells can divide 40-60 times before reaching senescence due to telomere shortening.", deeper: "This discovery earned Leonard Hayflick recognition. Cancer cells bypass this limit through telomerase activation." },
+
+            { q: "Q12", type: "MC", text: "Why do cancer cells require altered metabolism compared to normal cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Cancer_metabolism.svg/640px-Cancer_metabolism.svg.png", options: ["They're larger", "They grow faster and need more nutrients", "Warburg effect: even with oxygen, they prefer glycolysis", "All of the above"], correct: 3, explanation: "Cancer cells have elevated metabolism, preferring inefficient glycolysis even with oxygen present (Warburg effect).", deeper: "PET scans detect cancer by finding areas with high glucose uptake! This metabolic shift is being exploited for cancer detection and treatment." },
+
+            { q: "Q13", type: "MC", text: "How do tight junctions contribute to epithelial tissue function?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Tight_junction.svg/640px-Tight_junction.svg.png", options: ["Provide structural support", "Prevent unwanted substance passage between cells", "Allow rapid cell communication", "Store water"], correct: 1, explanation: "Tight junctions seal spaces between cells, creating barriers that control what passes through epithelial tissues.", deeper: "Your intestines rely on tight junctions to prevent pathogens from entering. This barrier is why leaky gut syndrome is problematic." },
+
+            { q: "Q14", type: "FIB", text: "The _______ is the selective permeability property that allows cells to maintain internal chemical balance.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Cell_membrane.svg/640px-Cell_membrane.svg.png", answer: "semipermeable", explanation: "The membrane allows small molecules through while blocking larger ones, maintaining osmotic balance.", deeper: "This selective permeability requires energy (active transport) for some substances. Without it, cells would swell and burst in hypotonic environments." },
+
+            { q: "Q15", type: "MC", text: "Why do red blood cells lack mitochondria despite needing ATP for ion pumps?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Red_blood_cells.svg/640px-Red_blood_cells.svg.png", options: ["They don't need ATP", "They rely on glycolysis for ATP; mitochondria would take space needed for hemoglobin", "They get ATP from plasma", "Evolution mistake"], correct: 1, explanation: "Red blood cells use anaerobic glycolysis for ATP. Mitochondria would compromise oxygen-carrying capacity.", deeper: "This design choice shows evolution optimizing for function. RBCs are essentially hemoglobin delivery vehicles." },
+
+            { q: "Q16", type: "MC", text: "How does the Na+/K+ ATPase maintain cell volume and electrical potential?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Na_K_pump.svg/640px-Na_K_pump.svg.png", options: ["Pumps 3 Na+ out, 2 K+ in, creating gradients", "Maintains osmotic balance preventing swelling", "Powers electrical signaling", "All of above"], correct: 3, explanation: "The pump uses ATP to maintain ion gradients essential for osmotic balance and electrical activity.", deeper: "This single protein consumes 30% of resting cellular ATP! Its failure leads to cell death. This is why anesthetics and toxins target it." },
+
+            { q: "Q17", type: "FIB", text: "The _______ is the compartmentalization of functions into membrane-bound organelles, unique to eukaryotes.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Animal_cell_structure_en.svg/640px-Animal_cell_structure_en.svg.png", answer: "endomembrane system", explanation: "Organelles create distinct chemical environments optimizing different metabolic pathways.", deeper: "This compartmentalization allows eukaryotes to have more complex regulation and diverse chemistry happening simultaneously." },
+
+            { q: "Q18", type: "MC", text: "Why can prokaryotic cells function without compartmentalization that eukaryotes require?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Prokaryote_cell_diagram.svg/640px-Prokaryote_cell_diagram.svg.png", options: ["They're simple and small", "Smaller size means less diffusion distance; genes can be turned on/off to create local conditions", "They don't do complex reactions", "No real reason"], correct: 1, explanation: "Small prokaryotes can regulate local chemistry through rapid gene expression and diffusion is efficient.", deeper: "Despite lack of compartmentalization, prokaryotes thrive! But eukaryotes can achieve greater complexity through compartmentalization." },
+
+            { q: "Q19", type: "MC", text: "How do cells communicate through gap junctions?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Gap_junction.svg/640px-Gap_junction.svg.png", options: ["Exchange proteins", "Form electrical and metabolic connections", "Share DNA", "Create tight seals"], correct: 1, explanation: "Gap junctions allow ions and small molecules to pass between adjacent cells, enabling coordinated responses.", deeper: "Heart muscle cells use gap junctions to synchronize contractions. Cancers often have disrupted gap junctions, reducing cell-cell communication." },
+
+            { q: "Q20", type: "FIB", text: "The _______ is an aqueous protein folding system in the ER that prevents misfolding and aggregation.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Rough_endoplasmic_reticulum.svg/640px-Rough_endoplasmic_reticulum.svg.png", answer: "chaperone", explanation: "Heat shock proteins (chaperones) assist in protein folding and prevent aggregation.", deeper: "Misfolded proteins cause Alzheimer's, Parkinson's, and other neurodegenerative diseases. Chaperones are therapeutic targets!" },
+
+            { q: "Q21", type: "MC", text: "Why do neurons with long axons have clusters of mitochondria at synaptic terminals?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Muscle_cell_mitochondria.svg/640px-Muscle_cell_mitochondria.svg.png", options: ["For insulation", "Synaptic transmission requires massive ATP for neurotransmitter release and ion pumping", "They provide structural support", "Random distribution"], correct: 1, explanation: "Synaptic activity is ATP-intensive. Local mitochondrial clusters supply energy where needed most.", deeper: "This shows cells organize their resources strategically. Energy is delivered where it's demanded, not distributed randomly." },
+
+            { q: "Q22", type: "FIB", text: "The _______ phenomenon occurs when cells in hypotonic solutions absorb water and swell.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Osmosis.svg/640px-Osmosis.svg.png", answer: "osmosis", explanation: "Water moves across membranes from areas of high water potential (low solute) to low water potential (high solute).", deeper: "Animal cells burst (lysing) in hypotonic solutions. Plant cells become turgid. This is why IV solutions must match blood osmolarity." },
+
+            { q: "Q23", type: "MC", text: "How do cells sense and respond to physical forces like stretching?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Mechanotransduction.svg/640px-Mechanotransduction.svg.png", options: ["They can't sense forces", "Mechanoreceptor proteins in membrane detect deformation", "Only through chemical signals", "Random response"], correct: 1, explanation: "Mechanotransduction proteins convert physical forces into chemical signals, triggering cellular responses.", deeper: "This explains why exercise strengthens muscles and bones. Mechanical stress triggers growth responses through cellular signaling!" },
+
+            { q: "Q24", type: "FIB", text: "The _______ is the process where cells engulf large particles or pathogens into vesicles.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Phagocytosis_diagram.svg/640px-Phagocytosis_diagram.svg.png", answer: "phagocytosis", explanation: "White blood cells use phagocytosis to engulf bacteria. The particle is digested by lysosomes.", deeper: "Without phagocytosis, bacteria would overrun our bodies. Your immune system depends on this process for survival!" },
+
+            { q: "Q25", type: "MC", text: "Why do different cell types have different organelle complements?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Cell_specialization.svg/640px-Cell_specialization.svg.png", options: ["Random chance", "Cells specialize for specific functions; they produce organelles matching their role", "Evolution mistake", "No real reason"], correct: 1, explanation: "Pancreatic beta cells have lots of ER for insulin production; neurons have abundant mitochondria for signaling.", deeper: "This shows cells optimize for their role. Gene expression determines which organelles are built. Form follows function!" },
+
+            { q: "Q26", type: "MC", text: "How do lysosomes prevent self-destruction of the cell?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Lysosome_diagram.svg/640px-Lysosome_diagram.svg.png", options: ["Enzymes are inactive", "Acidic pH and membrane separation prevent premature digestion", "Lysosomes have no enzymes", "They don't - cells destroy themselves"], correct: 1, explanation: "Lysosomal acid and membrane compartmentalization keep destructive enzymes isolated from cellular contents.", deeper: "When lysosomes rupture (lysosomal storage diseases), enzymes leak out and damage the cell. This causes severe genetic disorders." },
+
+            { q: "Q27", type: "FIB", text: "The _______ is the process of controlled degradation of cellular components by autophagosomes.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Autophagy.svg/640px-Autophagy.svg.png", answer: "autophagy", explanation: "Cells package damaged organelles into autophagosomes for lysosomal digestion and recycling.", deeper: "Autophagy is crucial for cellular cleaning. Cancer cells use autophagy to survive stress. Alzheimer's involves autophagy defects." },
+
+            { q: "Q28", type: "MC", text: "Why do mitochondrial DNA mutations cause severe diseases?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Mitochondrion_structure.svg/640px-Mitochondrion_structure.svg.png", options: ["Mitochondria are vital organelles", "Mutations affect ATP production; high-energy tissues suffer most", "Mitochondrial DNA is mutated differently", "No real reason"], correct: 1, explanation: "Brain, muscle, and heart depend heavily on ATP. Mitochondrial mutations devastate these tissues first.", deeper: "Mitochondrial diseases are incurable genetic disorders. Research into mitochondrial therapeutics is advancing rapidly." },
+
+            { q: "Q29", type: "MC", text: "How does the unfolded protein response (UPR) protect cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Rough_endoplasmic_reticulum.svg/640px-Rough_endoplasmic_reticulum.svg.png", options: ["Increases protein synthesis", "Detects misfolded proteins and halts synthesis until folding improves", "Accelerates export", "Has no protective role"], correct: 1, explanation: "When misfolded proteins accumulate, UPR slows translation and increases chaperone production to restore balance.", deeper: "Cancer cells often have defective UPR, allowing mutations to accumulate. Targeting UPR in cancer is a promising therapeutic approach." },
+
+            { q: "Q30", type: "FIB", text: "The _______ is the protein-coding gene sequence directly copied from DNA into mRNA.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Gene_expression.svg/640px-Gene_expression.svg.png", answer: "exon", explanation: "Exons are expressed sequences; introns are removed during RNA processing.", deeper: "Alternative splicing can create multiple proteins from one gene by including/excluding different exons. This increases proteome diversity!" },
+
+            { q: "Q31", type: "MC", text: "Why do cancer cells often lose adherens junctions?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Adheren_junctions.svg/640px-Adheren_junctions.svg.png", options: ["They're unnecessary", "Losing adhesion allows metastasis - escape from tissue and spread", "Increases strength", "Random mutation"], correct: 1, explanation: "Cancer cells downregulate adhesion molecules (E-cadherin), reducing cell-cell contact and enabling migration.", deeper: "This loss of adhesion is how cancer metastasizes. Understanding epithelial-mesenchymal transition is critical for cancer research." },
+
+            { q: "Q32", type: "FIB", text: "The _______ is the arrangement of protein-coding genes without introns in prokaryotes.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Prokaryote_gene.svg/640px-Prokaryote_gene.svg.png", answer: "polycistronic", explanation: "Prokaryotic operons have multiple genes transcribed into one mRNA, allowing coordinated expression.", deeper: "Eukaryotic genes are monocistronic - one gene, one mRNA. This difference reflects their evolutionary complexity." },
+
+            { q: "Q33", type: "MC", text: "How do vesicular transport systems maintain organelle identity?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Golgi_apparatus_structure.svg/640px-Golgi_apparatus_structure.svg.png", options: ["They don't - organelles mix", "SNARE proteins recognize specific addresses on vesicles and compartments, ensuring correct delivery", "All vesicles are identical", "No mechanism"], correct: 1, explanation: "SNAREs are molecular 'zip codes' ensuring vesicles dock at correct organelles, maintaining compartment functions.", deeper: "Botulinum toxin blocks SNAREs, preventing neurotransmitter release and causing paralysis. This is why it's used medically!" },
+
+            { q: "Q34", type: "FIB", text: "The _______ is the cellular process of breaking down large molecules into smaller, usable units.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Cellular_respiration.svg/640px-Cellular_respiration.svg.png", answer: "catabolism", explanation: "Catabolism releases energy from molecules. Anabolism builds complex molecules using energy.", deeper: "Your basal metabolic rate is primarily catabolic - breaking down molecules to fuel living. Exercise increases catabolism." },
+
+            { q: "Q35", type: "MC", text: "Why is the ER-Golgi-secretory pathway essential for multicellular organisms?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Secretory_pathway.svg/640px-Secretory_pathway.svg.png", options: ["It's optional", "Allows cells to export signaling molecules, hormones, and antibodies - essential for cell communication", "Only in plants", "Random function"], correct: 1, explanation: "This pathway enables intercellular communication, allowing organisms to coordinate activities across billions of cells.", deeper: "Your immune system, endocrine system, and nervous system all depend on this pathway. Without it, multicellularity would be impossible." },
+
+            { q: "Q36", type: "FIB", text: "The _______ is the degradation of proteins tagged with ubiquitin by the proteasome.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Proteasome.svg/640px-Proteasome.svg.png", answer: "proteasomal degradation", explanation: "This removes misfolded or damaged proteins, preventing accumulation of dysfunctional proteins.", deeper: "Defective proteasomal degradation causes Parkinson's disease. Proteasome inhibitors are used as cancer drugs." },
+
+            { q: "Q37", type: "MC", text: "How does horizontal gene transfer in bacteria enable rapid evolution?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Horizontal_gene_transfer.svg/640px-Horizontal_gene_transfer.svg.png", options: ["It doesn't happen", "Bacteria exchange DNA directly, acquiring traits instantly rather than through slow mutation", "Only vertical transfer occurs", "No significance"], correct: 1, explanation: "Plasmids and viral vectors allow bacteria to acquire beneficial genes (like antibiotic resistance) rapidly.", deeper: "Antibiotic resistance spreads primarily through horizontal gene transfer, not mutation. This is why antibiotic overuse drives resistance." },
+
+            { q: "Q38", type: "FIB", text: "The _______ is the outer membrane surrounding chloroplasts that originated from the host cell.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Chloroplast_structure.svg/640px-Chloroplast_structure.svg.png", answer: "outer envelope", explanation: "Double-membrane structure proves endosymbiotic origin: inner from bacterium, outer from host.", deeper: "This double membrane is diagnostic evidence supporting endosymbiotic theory. The evolution of complexity through symbiosis!" },
+
+            { q: "Q39", type: "MC", text: "Why do cancer cells have abnormal chromosome numbers (aneuploidy)?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Aneuploidy.svg/640px-Aneuploidy.svg.png", options: ["Spindle checkpoint failures allow division with unequal chromosome segregation", "No difference from normal cells", "Causes cancer", "Random"], correct: 0, explanation: "Loss of checkpoint control allows aneuploidy, providing growth advantages and driving cancer progression.", deeper: "Down syndrome (trisomy 21) happens in gametes. Cancer-causing aneuploidy develops in somatic cells during mitosis." },
+
+            { q: "Q40", type: "FIB", text: "The _______ is the stage of mitosis where chromosomes align at the cell's equator.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Mitosis_4.jpeg/640px-Mitosis_4.jpeg", answer: "metaphase", explanation: "Chromosomes are at their most condensed and aligned, prepared for segregation.", deeper: "Checkpoint control verifies all chromosomes are properly attached before proceeding. Errors here lead to aneuploidy." },
+
+            { q: "Q41", type: "MC", text: "How do peroxisomes contribute to cellular detoxification?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Peroxisome.svg/640px-Peroxisome.svg.png", options: ["They don't", "They break down toxic substances and hydrogen peroxide using catalase", "They store toxins", "Only in liver"], correct: 1, explanation: "Peroxisomes contain catalase which rapidly breaks down toxic H₂O₂ into harmless water and oxygen.", deeper: "This protects cells from oxidative damage. Peroxisomal disorders cause severe neurological problems." },
+
+            { q: "Q42", type: "FIB", text: "The _______ is the collective pool of ribosomes free in the cytoplasm synthesizing proteins for internal use.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Ribosome_structure.svg/640px-Ribosome_structure.svg.png", answer: "free ribosomes", explanation: "Versus bound ribosomes on ER making secreted/membrane proteins.", deeper: "This distinction allows cells to control which proteins are made for internal use versus export." },
+
+            { q: "Q43", type: "MC", text: "Why do mutations in genes encoding membrane proteins often cause diseases?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Cell_membrane.svg/640px-Cell_membrane.svg.png", options: ["Membrane proteins are unnecessary", "They're responsible for transport, signaling, and cell recognition - essential functions", "They're not important", "No reason"], correct: 1, explanation: "Dysfunctional membrane proteins impair nutrient transport, waste removal, or cell communication - critical for survival.", deeper: "Cystic fibrosis, muscular dystrophy, and many cancers involve mutated membrane proteins. Understanding these is key to treatment." },
+
+            { q: "Q44", type: "FIB", text: "The _______ is the process where cells reduce surface markers to avoid immune detection.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Immune_escape.svg/640px-Immune_escape.svg.png", answer: "immune evasion", explanation: "Cancer cells often reduce MHC expression, becoming 'invisible' to immune cells.", deeper: "Immunotherapy works by restoring immune recognition. CAR-T cells are engineered to bypass these evasion mechanisms." },
+
+            { q: "Q45", type: "MC", text: "How do cells establish cell polarity during development?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Cell_polarity.svg/640px-Cell_polarity.svg.png", options: ["Random organization", "Asymmetric protein distribution creates distinct cellular regions", "All proteins are evenly distributed", "No polarity exists"], correct: 1, explanation: "Polarized cells have distinct apical and basal regions with different proteins, crucial for tissue function.", deeper: "Loss of polarity is a hallmark of cancer. Transformed cells lose defined cellular organization." },
+
+            { q: "Q46", type: "FIB", text: "The _______ is the inherited information passed through mitochondria from mother to offspring.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Mitochondrion_structure.svg/640px-Mitochondrion_structure.svg.png", answer: "mitochondrial inheritance", explanation: "Maternal inheritance occurs because egg cytoplasm contains mitochondria; sperm doesn't.", deeper: "This creates maternal-only genetic diseases. Genetic counseling uses mitochondrial DNA analysis for diagnosis." },
+
+            { q: "Q47", type: "MC", text: "Why are lysozyme in tears and stomach acid important cellular defenses?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Lysozyme.svg/640px-Lysozyme.svg.png", options: ["They're not important", "They're non-cellular defenses protecting cell barriers from infection", "They help cells divide", "Random function"], correct: 1, explanation: "These external defenses protect epithelial cells from bacterial invasion before reaching them.", deeper: "Maintaining barrier integrity is as important as cellular defenses. Prevention beats cure in immune function." },
+
+            { q: "Q48", type: "FIB", text: "The _______ is the property of cell membranes allowing some substances through while blocking others.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Cell_membrane.svg/640px-Cell_membrane.svg.png", answer: "selective permeability", explanation: "Achieved through membrane structure - lipid bilayer with embedded proteins.", deeper: "Without selective permeability, osmotic balance would fail. Cells would swell in hypotonic or shrivel in hypertonic solutions." },
+
+            { q: "Q49", type: "MC", text: "How do centrosomes organize and nucleate microtubules?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Centrosome_diagram.svg/640px-Centrosome_diagram.svg.png", options: ["They're just storage", "They contain γ-tubulin rings that seed microtubule polymerization", "They depolymerize microtubules", "No function"], correct: 1, explanation: "Centrosomes act as microtubule organizing centers (MTOCs), creating the spindle for cell division.", deeper: "Centrosome abnormalities contribute to cancer development. Excess centrosomes lead to chromosome instability." },
+
+            { q: "Q50", type: "MC", text: "Why is understanding cellular senescence important for aging and cancer research?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Cell_senescence.svg/640px-Cell_senescence.svg.png", options: ["It's not important", "Senescence is a tumor suppressor mechanism; cancer cells that overcome it become immortal", "Senescence only in plants", "No connection"], correct: 1, explanation: "Senescent cells stop dividing and eventually die, preventing cancer. Cancer cells reactivate telomerase to escape.", deeper: "Cellular aging and cancer are linked through telomere biology. Understanding this is revolutionizing both aging and cancer research." }
+        ];
+
+        let currentScreen = 0;
+        let score = 0;
+        const questionsPerScreen = 3;
+        const totalQuestions = quizData.length;
+
+        function renderScreen() {
+            const startIdx = currentScreen * questionsPerScreen;
+            const endIdx = Math.min(startIdx + questionsPerScreen, totalQuestions);
+            const questionsToShow = quizData.slice(startIdx, endIdx);
+            let html = '';
+            questionsToShow.forEach((q, idx) => {
+                const qIdx = startIdx + idx;
+                html += `<div class="question-card"><div class="q-number">${q.q}</div><div class="q-text">${q.text}</div><div class="q-media"><img src="${q.image}" alt="Q" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22150%22/%3E%3C/svg%3E'" /></div><div id="options-${qIdx}">`;
+                if (q.type === "MC") {
+                    html += '<div class="options">';
+                    q.options.forEach((opt, i) => {
+                        html += `<label class="option"><input type="radio" name="answer-${qIdx}" value="${i}"><span>${opt}</span></label>`;
+                    });
+                    html += '</div>';
+                }
+                html += `</div><button class="submit-btn" onclick="submitAnswer(${qIdx})">Submit</button><div class="feedback" id="feedback-${qIdx}"></div></div>`;
+            });
+            document.getElementById('quizContainer').innerHTML = html;
+            updateProgress();
+        }
+
+        function submitAnswer(qIdx) {
+            const q = quizData[qIdx];
+            const selected = document.querySelector(`input[name="answer-${qIdx}"]:checked`);
+            if (!selected) { alert('Select an option!'); return; }
+            const isCorrect = parseInt(selected.value) === q.correct;
+            if (isCorrect) score++;
+            const feedbackEl = document.getElementById(`feedback-${qIdx}`);
+            feedbackEl.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+            const correctAnswer = q.options[q.correct];
+            feedbackEl.innerHTML = `<div class="feedback-title">${isCorrect ? '✅ Correct!' : '❌ Incorrect'}</div><p>${isCorrect ? q.explanation : `Correct: ${correctAnswer}<br>${q.explanation}`}</p><div class="deeper-learning">🧠 ${q.deeper}</div>`;
+            document.querySelector(`#options-${qIdx}`).style.pointerEvents = 'none';
+            document.querySelector(`button[onclick="submitAnswer(${qIdx})"]`).disabled = true;
+            updateScore();
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            const answered = Math.min((currentScreen + 1) * questionsPerScreen, totalQuestions);
+            document.getElementById('accuracy').textContent = Math.round((score / answered) * 100);
+        }
+
+        function nextScreen() {
+            if (currentScreen < Math.ceil(totalQuestions / questionsPerScreen) - 1) {
+                currentScreen++;
+                renderScreen();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            } else showCompletion();
+        }
+
+        function previousScreen() {
+            if (currentScreen > 0) {
+                currentScreen--;
+                renderScreen();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentScreen * questionsPerScreen + 1) / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentQ').textContent = Math.min(currentScreen * questionsPerScreen + 1, totalQuestions);
+            document.getElementById('prevBtn').disabled = currentScreen === 0;
+        }
+
+        function showCompletion() {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            let msg = percentage >= 90 ? '🔥 EXCEPTIONAL!' : percentage >= 80 ? '🎓 EXCELLENT!' : '👍 GREAT!';
+            document.getElementById('quizContainer').innerHTML = '';
+            document.getElementById('completionContainer').innerHTML = `<div class="completion"><div class="completion-icon">🧬</div><h2>Unit 2 Advanced Complete!</h2><div class="score-box"><div>Score</div><div class="score-number">${score}/50</div><div>${percentage}%</div></div><p>${msg}</p><a href="master_index.html" style="display:inline-block; color: #f5576c; text-decoration: none; margin-top: 20px; padding: 12px 30px; border: 2px solid #f5576c; border-radius: 8px; font-weight: 600;">← Back</a></div>`;
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        renderScreen();
+    </script>
+</body>
+</html>

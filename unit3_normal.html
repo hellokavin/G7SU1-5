@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 3: Matter & States - Standard Level</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI'; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 30px; }
+        .container { max-width: 1800px; margin: 0 auto; }
+        header { text-align: center; color: white; margin-bottom: 35px; }
+        h1 { font-size: 2.8em; margin-bottom: 10px; font-weight: 700; }
+        .unit-info { display: flex; justify-content: space-between; background: rgba(255,255,255,0.1); padding: 20px 30px; border-radius: 10px; margin-bottom: 20px; }
+        .stats { display: flex; gap: 40px; color: white; }
+        .stat { text-align: center; }
+        .stat-label { font-size: 0.85em; opacity: 0.8; }
+        .stat-value { font-size: 1.8em; font-weight: 700; margin-top: 5px; }
+        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; margin-top: 10px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #4CAF50, #45a049); transition: width 0.3s; }
+        .questions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(530px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .question-card { background: white; border-radius: 14px; padding: 25px; box-shadow: 0 15px 45px rgba(0,0,0,0.2); }
+        .q-number { font-size: 1.8em; font-weight: 700; color: #667eea; margin-bottom: 12px; }
+        .q-text { font-size: 1.15em; font-weight: 600; color: #333; margin-bottom: 15px; line-height: 1.6; }
+        .q-media { width: 100%; height: 180px; background: #f5f5f5; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 2px solid #ddd; overflow: hidden; }
+        .q-media img { max-width: 100%; max-height: 100%; object-fit: cover; }
+        .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        .option { display: flex; align-items: center; padding: 12px 14px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; background: #f9f9f9; transition: all 0.3s; }
+        .option:hover { border-color: #667eea; background: #f0f5ff; transform: translateX(5px); }
+        .option input { width: 18px; height: 18px; margin-right: 12px; accent-color: #667eea; }
+        .fill-input { width: 100%; padding: 10px 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 1.05em; margin-bottom: 15px; }
+        .fill-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .submit-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 11px 22px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.3); }
+        .submit-btn:disabled { opacity: 0.6; }
+        .feedback { margin-top: 15px; padding: 14px; border-radius: 8px; display: none; font-size: 0.98em; line-height: 1.5; }
+        .feedback.correct { background: #e8f5e9; border-left: 4px solid #4CAF50; color: #2e7d32; display: block; }
+        .feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; color: #c62828; display: block; }
+        .feedback-title { font-weight: 700; margin-bottom: 6px; }
+        .deeper-learning { background: #f0f5ff; padding: 10px; border-radius: 6px; margin-top: 8px; border-left: 4px solid #667eea; font-style: italic; color: #555; font-size: 0.95em; }
+        .controls { display: flex; justify-content: center; gap: 15px; margin-top: 40px; }
+        .nav-btn { background: white; color: #667eea; border: 2px solid #667eea; padding: 12px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .nav-btn:hover { background: #667eea; color: white; }
+        .nav-btn:disabled { opacity: 0.5; }
+        .completion { text-align: center; background: white; padding: 60px 40px; border-radius: 14px; max-width: 600px; margin: 50px auto; }
+        .completion h2 { color: #667eea; font-size: 2.5em; margin-bottom: 15px; }
+        .score-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin: 25px 0; }
+        .score-number { font-size: 2.5em; font-weight: 700; }
+        a.back-btn { display: inline-block; color: white; text-decoration: none; margin-bottom: 20px; padding: 10px 20px; background: rgba(255,255,255,0.2); border-radius: 8px; }
+        @media (max-width: 1200px) { .questions-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="master_index.html" class="back-btn">← Back to Units</a>
+        <header><h1>⚛️ Unit 3: Matter & States</h1><p style="font-size: 1.2em; opacity: 0.95;">Standard Level - 50 Questions</p></header>
+        <div class="unit-info">
+            <div class="stats">
+                <div class="stat"><div class="stat-label">Progress</div><div class="stat-value"><span id="currentQ">1</span>/50</div></div>
+                <div class="stat"><div class="stat-label">Score</div><div class="stat-value"><span id="score">0</span></div></div>
+                <div class="stat"><div class="stat-label">Accuracy</div><div class="stat-value"><span id="accuracy">0</span>%</div></div>
+            </div>
+            <div style="flex: 1;"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+        </div>
+        <div id="quizContainer" class="questions-grid"></div>
+        <div id="completionContainer"></div>
+        <div class="controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousScreen()" disabled>← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextScreen()" style="display:none;">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            { q: "Q1", type: "MC", text: "What are the three states of matter?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/States_of_matter.svg/640px-States_of_matter.svg.png", options: ["Liquid, solid, gas", "Solid, liquid, plasma", "Solid, liquid, gas", "Hard, soft, flowing"], correct: 2, explanation: "Solid, liquid, and gas are the three common states of matter.", deeper: "Plasma is a fourth state where particles are ionized. It exists in stars and lightning." },
+            
+            { q: "Q2", type: "MC", text: "In a solid, particles are:", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Solid_structure.svg/640px-Solid_structure.svg.png", options: ["Tightly packed in fixed positions", "Loosely packed and moving freely", "Only vibrating slightly", "Randomly arranged"], correct: 0, explanation: "Solid particles have fixed positions and only vibrate in place.", deeper: "This is why solids have definite shape and volume." },
+
+            { q: "Q3", type: "FIB", text: "The process where liquid turns into gas is called _______.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Evaporation.svg/640px-Evaporation.svg.png", answer: "evaporation", explanation: "Evaporation occurs when liquid molecules gain energy and escape as gas.", deeper: "Boiling is rapid evaporation at the boiling point. Evaporation happens below boiling point." },
+
+            { q: "Q4", type: "MC", text: "What is density?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Density_column.jpg/640px-Density_column.jpg", options: ["How heavy something feels", "Mass per unit volume", "How tightly packed atoms are", "Both B and C"], correct: 3, explanation: "Density = mass/volume. It shows how closely packed matter is.", deeper: "Different states of matter have different densities. Ice floats because frozen water is less dense than liquid water." },
+
+            { q: "Q5", type: "MC", text: "Which material will sink in water?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Density_and_buoyancy.svg/640px-Density_and_buoyancy.svg.png", options: ["Wood (less dense than water)", "Plastic foam", "Iron (more dense than water)", "Oil"], correct: 2, explanation: "Objects denser than water (density > 1 g/cm³) sink.", deeper: "Density determines whether objects float or sink in liquids." },
+
+            { q: "Q6", type: "FIB", text: "The _______ is the temperature at which a liquid becomes a solid.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Freezing_point.svg/640px-Freezing_point.svg.png", answer: "freezing point", explanation: "Water freezes at 0°C (32°F).", deeper: "Adding salt lowers the freezing point, which is why salt melts ice on roads." },
+
+            { q: "Q7", type: "MC", text: "What happens to particle movement when temperature increases?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Temperature_and_kinetic_energy.svg/640px-Temperature_and_kinetic_energy.svg.png", options: ["Particles move slower", "Particles move faster", "No change in movement", "Particles stop moving"], correct: 1, explanation: "Temperature is the average kinetic energy of particles. Higher temp = faster movement.", deeper: "This is why hot water evaporates faster than cold water." },
+
+            { q: "Q8", type: "FIB", text: "The _______ is the temperature at which a solid becomes a liquid.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Melting_point.svg/640px-Melting_point.svg.png", answer: "melting point", explanation: "Ice melts at 0°C. Different substances have different melting points.", deeper: "Melting and freezing occur at the same temperature - 0°C for water." },
+
+            { q: "Q9", type: "MC", text: "In a liquid, particles can:", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Liquid_structure.svg/640px-Liquid_structure.svg.png", options: ["Only vibrate", "Move around freely", "Move past each other but stay close together", "Escape as gas"], correct: 2, explanation: "Liquid particles can move and flow but remain in contact.", deeper: "This gives liquids their fluidity while maintaining volume." },
+
+            { q: "Q10", type: "MC", text: "What defines a gas?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Gas_particles.svg/640px-Gas_particles.svg.png", options: ["Particles in fixed positions", "Particles moving freely with no fixed shape or volume", "Only at high temperatures", "Invisible to the eye"], correct: 1, explanation: "Gases have no fixed shape or volume - they expand to fill containers.", deeper: "Gases have lower density than solids and liquids because particles are far apart." },
+
+            { q: "Q11", type: "FIB", text: "The _______ is the temperature at which a liquid boils.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Boiling.svg/640px-Boiling.svg.png", answer: "boiling point", explanation: "Water boils at 100°C at sea level.", deeper: "Boiling point changes with atmospheric pressure. Higher altitude = lower boiling point." },
+
+            { q: "Q12", type: "MC", text: "Which property is characteristic of solids?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Solid_properties.svg/640px-Solid_properties.svg.png", options: ["No definite shape", "Takes shape of container", "Has definite shape and volume", "Can flow"], correct: 2, explanation: "Solids maintain their shape and volume.", deeper: "This is because particles are held in fixed positions by strong forces." },
+
+            { q: "Q13", type: "MC", text: "What causes particles to move faster?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Heat_and_motion.svg/640px-Heat_and_motion.svg.png", options: ["Light", "Heat", "Pressure", "Sound"], correct: 1, explanation: "Heat provides energy that makes particles move faster.", deeper: "Heat and temperature are related: heat is energy transfer, temperature is the result." },
+
+            { q: "Q14", type: "FIB", text: "The _______ is how closely packed particles are in a substance.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Density_column.jpg/640px-Density_column.jpg", answer: "density", explanation: "Measured as mass per unit volume (g/cm³ or kg/m³).", deeper: "Density is a characteristic property used to identify substances." },
+
+            { q: "Q15", type: "MC", text: "Which state of matter has the highest particle density?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/States_density_comparison.svg/640px-States_density_comparison.svg.png", options: ["Gas", "Liquid", "Solid", "All have equal density"], correct: 2, explanation: "Solids have tightly packed particles, making them denser.", deeper: "Generally: solid > liquid > gas in terms of density." },
+
+            { q: "Q16", type: "MC", text: "What happens during condensation?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Condensation.svg/640px-Condensation.svg.png", options: ["Gas becomes liquid", "Liquid becomes gas", "Solid becomes liquid", "Liquid becomes solid"], correct: 0, explanation: "Condensation is when gas cools and becomes liquid.", deeper: "Dew forming on grass in morning is condensation of water vapor." },
+
+            { q: "Q17", type: "FIB", text: "The _______ is the process where a solid directly becomes a gas without melting.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Sublimation.svg/640px-Sublimation.svg.png", answer: "sublimation", explanation: "Dry ice sublimates at room temperature.", deeper: "This happens because vapor pressure exceeds atmospheric pressure." },
+
+            { q: "Q18", type: "MC", text: "Why does ice float on water?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Ice_floating.svg/640px-Ice_floating.svg.png", options: ["Ice is lighter", "Frozen water is less dense than liquid water", "Ice has air pockets", "Water pressure pushes it up"], correct: 1, explanation: "Ice has lower density (0.92 g/cm³) than liquid water (1.0 g/cm³).", deeper: "This unusual property is why aquatic life survives winter - ice floats, protecting water below." },
+
+            { q: "Q19", type: "MC", text: "What is a physical property?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Physical_properties.svg/640px-Physical_properties.svg.png", options: ["Changes the substance into something new", "Observed without changing the substance", "Only color and shape", "Related to reaction with oxygen"], correct: 1, explanation: "Physical properties (color, density, melting point) don't change substance identity.", deeper: "Melting ice changes its state but not its composition - still H₂O." },
+
+            { q: "Q20", type: "FIB", text: "The process where a gas becomes a solid without melting is called _______.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Deposition.svg/640px-Deposition.svg.png", answer: "deposition", explanation: "Frost forms by deposition of water vapor.", deeper: "This is the reverse of sublimation." },
+
+            { q: "Q21", type: "MC", text: "Which has the lowest density?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Gas_density.svg/640px-Gas_density.svg.png", options: ["Solid", "Liquid", "Gas", "All equal"], correct: 2, explanation: "Gas particles are far apart, giving gases the lowest density.", deeper: "This is why hot air balloons float - hot air is less dense than cool air." },
+
+            { q: "Q22", type: "FIB", text: "The _______ point is where liquid becomes gas.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Boiling.svg/640px-Boiling.svg.png", answer: "boiling", explanation: "At boiling point, liquid rapidly evaporates.", deeper: "Pressure affects boiling point - higher pressure = higher boiling point." },
+
+            { q: "Q23", type: "MC", text: "What is compressibility?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Compressibility.svg/640px-Compressibility.svg.png", options: ["Ability to be heated", "Ability to be compressed", "Ability to flow", "Ability to change color"], correct: 1, explanation: "Compressibility is how much a substance's volume can decrease under pressure.", deeper: "Gases are highly compressible; solids are barely compressible." },
+
+            { q: "Q24", type: "MC", text: "In which state do particles have the most kinetic energy?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Particle_kinetic_energy.svg/640px-Particle_kinetic_energy.svg.png", options: ["Solid", "Liquid", "Gas", "All equal"], correct: 2, explanation: "Gas particles move fastest and have greatest kinetic energy.", deeper: "Temperature reflects average kinetic energy of particles." },
+
+            { q: "Q25", type: "FIB", text: "The _______ is the amount of space an object occupies.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Volume_example.svg/640px-Volume_example.svg.png", answer: "volume", explanation: "Measured in cm³, liters, or m³.", deeper: "Solids and liquids have definite volume; gases don't." },
+
+            { q: "Q26", type: "MC", text: "What causes matter to change states?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/State_changes.svg/640px-State_changes.svg.png", options: ["Color change", "Heat energy being added or removed", "Pressure alone", "Gravity"], correct: 1, explanation: "Heat energy transfer causes phase changes.", deeper: "Pressure also affects state changes, but heat is primary." },
+
+            { q: "Q27", type: "FIB", text: "The _______ is the amount of matter in an object.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Mass_concept.svg/640px-Mass_concept.svg.png", answer: "mass", explanation: "Measured in grams or kilograms.", deeper: "Mass doesn't change with location, unlike weight." },
+
+            { q: "Q28", type: "MC", text: "Which state has indefinite shape but definite volume?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Liquid_properties.svg/640px-Liquid_properties.svg.png", options: ["Solid", "Liquid", "Gas", "Plasma"], correct: 1, explanation: "Liquids take the shape of their container but maintain volume.", deeper: "This is why we can pour liquids into different containers." },
+
+            { q: "Q29", type: "MC", text: "What is ductility?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Ductility.svg/640px-Ductility.svg.png", options: ["Hardness", "Ability to be drawn into thin wires", "Ability to reflect light", "Ability to conduct electricity"], correct: 1, explanation: "Ductility is a property of some materials to be stretched into wires.", deeper: "Gold and copper are highly ductile metals." },
+
+            { q: "Q30", type: "FIB", text: "The _______ is the amount of matter per unit volume of a substance.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Density_definition.jpg/640px-Density_definition.jpg", answer: "density", explanation: "Density = mass/volume.", deeper: "Two objects can have same mass but different densities depending on volume." },
+
+            { q: "Q31", type: "MC", text: "What is malleability?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Malleability.svg/640px-Malleability.svg.png", options: ["Ability to conduct electricity", "Ability to be hammered into sheets", "Hardness", "Elasticity"], correct: 1, explanation: "Malleability is the ability to be hammered or pressed without breaking.", deeper: "Gold is highly malleable - can be beaten into very thin sheets." },
+
+            { q: "Q32", type: "FIB", text: "The _______ is the measure of how much matter is in an object.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Mass_vs_weight.svg/640px-Mass_vs_weight.svg.png", answer: "mass", explanation: "Mass is constant; weight changes with gravity.", deeper: "On the moon, weight is 1/6 of Earth but mass is the same." },
+
+            { q: "Q33", type: "MC", text: "Which property determines if an object will float or sink?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Density_and_buoyancy.jpg/640px-Density_and_buoyancy.jpg", options: ["Color", "Temperature", "Density relative to the fluid", "Size"], correct: 2, explanation: "Objects less dense than a fluid float; denser ones sink.", deeper: "Steel ships float because their average density includes air space inside." },
+
+            { q: "Q34", type: "FIB", text: "The _______ is a substance's resistance to being scratched.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Hardness.svg/640px-Hardness.svg.png", answer: "hardness", explanation: "Diamond is the hardest known natural substance.", deeper: "Hardness is measured on the Mohs scale (1-10)." },
+
+            { q: "Q35", type: "MC", text: "What state of matter has particles that are far apart and move freely?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Gas_structure.svg/640px-Gas_structure.svg.png", options: ["Solid", "Liquid", "Gas", "None of these"], correct: 2, explanation: "Gas particles have maximum separation and random motion.", deeper: "This gives gases their ability to expand and compress." },
+
+            { q: "Q36", type: "FIB", text: "The _______ is a liquid's resistance to flowing.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Viscosity.svg/640px-Viscosity.svg.png", answer: "viscosity", explanation: "Honey has high viscosity; water has low viscosity.", deeper: "Temperature affects viscosity - heating reduces it." },
+
+            { q: "Q37", type: "MC", text: "Which correctly orders densities?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Density_comparison.jpg/640px-Density_comparison.jpg", options: ["Gas > Liquid > Solid", "Solid > Liquid > Gas", "Liquid > Solid > Gas", "All equal"], correct: 1, explanation: "Solids are densest due to tightly packed particles.", deeper: "This is why most solids sink in their liquid forms." },
+
+            { q: "Q38", type: "FIB", text: "The _______ is the upward force that keeps objects afloat.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Buoyancy.svg/640px-Buoyancy.svg.png", answer: "buoyant force", explanation: "Objects float when buoyant force equals weight.", deeper: "Archimedes' Principle: buoyant force equals weight of displaced fluid." },
+
+            { q: "Q39", type: "MC", text: "What is thermal energy?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Thermal_energy.svg/640px-Thermal_energy.svg.png", options: ["Only heat", "Total kinetic energy of all particles", "Temperature of surroundings", "Energy from the sun"], correct: 1, explanation: "Thermal energy is the sum of all kinetic and potential energy of particles.", deeper: "Higher temperature = higher thermal energy." },
+
+            { q: "Q40", type: "FIB", text: "The _______ is the temperature scale where 0 K equals absolute zero.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Temperature_scales.svg/640px-Temperature_scales.svg.png", answer: "Kelvin", explanation: "0 K is the lowest possible temperature (-273.15°C).", deeper: "Kelvin is the SI unit for temperature in science." },
+
+            { q: "Q41", type: "MC", text: "What is elasticity?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Elasticity.svg/640px-Elasticity.svg.png", options: ["Ability to break easily", "Ability to return to original shape after force is removed", "Ability to stretch permanently", "Color change"], correct: 1, explanation: "Elastic materials deform when stressed but return to original shape.", deeper: "Rubber bands and springs are elastic; putty is plastic." },
+
+            { q: "Q42", type: "FIB", text: "The _______ is a substance's ability to conduct heat.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Thermal_conductivity.svg/640px-Thermal_conductivity.svg.png", answer: "thermal conductivity", explanation: "Metals are good thermal conductors; insulators are poor.", deeper: "This is why pot handles are made of plastic while the pot is metal." },
+
+            { q: "Q43", type: "MC", text: "Which process involves a gas becoming a liquid?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Condensation.svg/640px-Condensation.svg.png", options: ["Evaporation", "Condensation", "Sublimation", "Deposition"], correct: 1, explanation: "Condensation releases heat as gas cools to form liquid.", deeper: "Water vapor condenses on cold mirror surfaces." },
+
+            { q: "Q44", type: "FIB", text: "The _______ is the point where solid and liquid phases can exist together.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Melting_freezing.svg/640px-Melting_freezing.svg.png", answer: "melting point", explanation: "At melting point, heat added goes to changing state, not temperature.", deeper: "Pressure affects melting point - ice under pressure can melt at below 0°C." },
+
+            { q: "Q45", type: "MC", text: "What is surface tension?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Surface_tension.svg/640px-Surface_tension.svg.png", options: ["Pressure from above", "Cohesive force between particles at liquid surface", "Temperature effect", "Weight of liquid"], correct: 1, explanation: "Surface tension allows insects to walk on water.", deeper: "Water has high surface tension due to hydrogen bonding." },
+
+            { q: "Q46", type: "FIB", text: "The _______ is the process where matter changes from one state to another.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/State_changes.svg/640px-State_changes.svg.png", answer: "phase change", explanation: "Melting, freezing, evaporation, condensation, sublimation, deposition.", deeper: "Phase changes involve heat energy transfer." },
+
+            { q: "Q47", type: "MC", text: "Which state of matter has indefinite shape and volume?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Gas_properties.svg/640px-Gas_properties.svg.png", options: ["Solid", "Liquid", "Gas", "Plasma only"], correct: 2, explanation: "Gases expand to fill any container they're in.", deeper: "This is why gas particles must be contained or they escape." },
+
+            { q: "Q48", type: "FIB", text: "The _______ is the amount of heat needed to raise 1 g of substance 1°C.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Specific_heat.svg/640px-Specific_heat.svg.png", answer: "specific heat capacity", explanation: "Water has high specific heat - hard to heat or cool.", deeper: "This is why oceans moderate Earth's climate - water stores lots of heat." },
+
+            { q: "Q49", type: "MC", text: "What happens at absolute zero?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Absolute_zero.svg/640px-Absolute_zero.svg.png", options: ["Matter disappears", "All particle motion theoretically stops", "Matter explodes", "All matter becomes gas"], correct: 1, explanation: "Absolute zero (0 K) is where all thermal motion ceases.", deeper: "Absolute zero has never been reached, but scientists get close in labs." },
+
+            { q: "Q50", type: "MC", text: "Which factor does NOT affect the rate of evaporation?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Evaporation_factors.svg/640px-Evaporation_factors.svg.png", options: ["Temperature", "Surface area", "Humidity", "Color of the liquid"], correct: 3, explanation: "Color doesn't affect evaporation rate - temperature, surface area, and humidity do.", deeper: "Higher temperature and lower humidity increase evaporation." }
+        ];
+
+        let currentScreen = 0;
+        let score = 0;
+        const questionsPerScreen = 3;
+        const totalQuestions = quizData.length;
+
+        function renderScreen() {
+            const startIdx = currentScreen * questionsPerScreen;
+            const endIdx = Math.min(startIdx + questionsPerScreen, totalQuestions);
+            const questionsToShow = quizData.slice(startIdx, endIdx);
+            let html = '';
+            questionsToShow.forEach((q, idx) => {
+                const qIdx = startIdx + idx;
+                html += `<div class="question-card"><div class="q-number">${q.q}</div><div class="q-text">${q.text}</div><div class="q-media"><img src="${q.image}" alt="Q" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22150%22/%3E%3C/svg%3E'" /></div><div id="options-${qIdx}">`;
+                if (q.type === "MC") {
+                    html += '<div class="options">';
+                    q.options.forEach((opt, i) => {
+                        html += `<label class="option"><input type="radio" name="answer-${qIdx}" value="${i}"><span>${opt}</span></label>`;
+                    });
+                    html += '</div>';
+                }
+                html += `</div><button class="submit-btn" onclick="submitAnswer(${qIdx})">Submit</button><div class="feedback" id="feedback-${qIdx}"></div></div>`;
+            });
+            document.getElementById('quizContainer').innerHTML = html;
+            updateProgress();
+        }
+
+        function submitAnswer(qIdx) {
+            const q = quizData[qIdx];
+            const selected = document.querySelector(`input[name="answer-${qIdx}"]:checked`);
+            if (!selected) { alert('Select an option!'); return; }
+            const isCorrect = parseInt(selected.value) === q.correct;
+            if (isCorrect) score++;
+            const feedbackEl = document.getElementById(`feedback-${qIdx}`);
+            feedbackEl.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+            const correctAnswer = q.options[q.correct];
+            feedbackEl.innerHTML = `<div class="feedback-title">${isCorrect ? '✅ Correct!' : '❌ Incorrect'}</div><p>${isCorrect ? q.explanation : `Correct: ${correctAnswer}<br>${q.explanation}`}</p><div class="deeper-learning">🧠 ${q.deeper}</div>`;
+            document.querySelector(`#options-${qIdx}`).style.pointerEvents = 'none';
+            document.querySelector(`button[onclick="submitAnswer(${qIdx})"]`).disabled = true;
+            updateScore();
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            const answered = Math.min((currentScreen + 1) * questionsPerScreen, totalQuestions);
+            document.getElementById('accuracy').textContent = Math.round((score / answered) * 100);
+        }
+
+        function nextScreen() {
+            if (currentScreen < Math.ceil(totalQuestions / questionsPerScreen) - 1) {
+                currentScreen++;
+                renderScreen();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            } else showCompletion();
+        }
+
+        function previousScreen() {
+            if (currentScreen > 0) {
+                currentScreen--;
+                renderScreen();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentScreen * questionsPerScreen + 1) / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentQ').textContent = Math.min(currentScreen * questionsPerScreen + 1, totalQuestions);
+            document.getElementById('prevBtn').disabled = currentScreen === 0;
+        }
+
+        function showCompletion() {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            let msg = percentage >= 90 ? '🌟 Excellent!' : percentage >= 80 ? '🎉 Great job!' : '👍 Good!';
+            document.getElementById('quizContainer').innerHTML = '';
+            document.getElementById('completionContainer').innerHTML = `<div class="completion"><div style="font-size: 5em; margin-bottom: 20px;">⚛️</div><h2>Unit 3 Complete!</h2><div class="score-box"><div>Score</div><div class="score-number">${score}/50</div><div>${percentage}%</div></div><p>${msg}</p><a href="master_index.html" style="display:inline-block; color: #667eea; text-decoration: none; margin-top: 20px; padding: 12px 30px; border: 2px solid #667eea; border-radius: 8px; font-weight: 600;">← Back</a></div>`;
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        renderScreen();
+    </script>
+</body>
+</html>

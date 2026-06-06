@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 1: Measurement - Normal Level</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 35px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .unit-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            padding: 20px 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 40px;
+            color: white;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            transition: width 0.3s ease;
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .q-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .q-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .q-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 3em;
+            color: #999;
+            border: 2px dashed #ddd;
+        }
+
+        .q-image img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 8px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f9f9f9;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f5ff;
+            transform: translateX(5px);
+        }
+
+        .option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .option-text {
+            flex-grow: 1;
+            font-size: 1.05em;
+        }
+
+        .fill-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.05em;
+            font-family: inherit;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        .fill-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102,126,234,0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            display: none;
+            font-size: 1.05em;
+            line-height: 1.6;
+        }
+
+        .feedback.correct {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            color: #2e7d32;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+            display: block;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .deeper-learning {
+            background: #f0f5ff;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border-left: 4px solid #667eea;
+            font-style: italic;
+            color: #555;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1.05em;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .completion {
+            text-align: center;
+            background: white;
+            padding: 60px 40px;
+            border-radius: 14px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            max-width: 600px;
+            margin: 50px auto;
+        }
+
+        .completion-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .completion h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .score-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .score-number {
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .completion-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .questions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        a.back-btn {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        a.back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="master_index.html" class="back-btn">← Back to Units</a>
+
+        <header>
+            <h1>📏 Unit 1: Measurement in Science</h1>
+            <p style="font-size: 1.2em; opacity: 0.95;">Normal Level - 50 Questions</p>
+        </header>
+
+        <div class="unit-info">
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">Progress</div>
+                    <div class="stat-value"><span id="currentQ">1</span>/50</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value"><span id="score">0</span></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-value"><span id="accuracy">0</span>%</div>
+                </div>
+            </div>
+            <div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="quizContainer" class="questions-grid"></div>
+        <div id="completionContainer"></div>
+
+        <div class="controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousScreen()" disabled>← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextScreen()" style="display:none;">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            // 50 Questions for Unit 1 - Measurement (Normal Level)
+            { q: "Q1", type: "MC", text: "What is the SI unit of length?", image: "📏", options: ["Centimetre", "Metre", "Kilometre", "Inch"], correct: 1, explanation: "The metre (m) is the SI base unit for measuring length.", deeper: "All other length measurements are derived from the metre. 1 km = 1000 m, 1 cm = 0.01 m" },
+            { q: "Q2", type: "MC", text: "Which instrument would you use to measure the mass of a sample?", image: "⚖️", options: ["Ruler", "Digital balance", "Thermometer", "Measuring cylinder"], correct: 1, explanation: "A digital balance measures mass in grams or kilograms.", deeper: "Electronic balances are more accurate than mechanical ones and show mass directly on a display." },
+            { q: "Q3", type: "MC", text: "What does 'SI' stand for?", image: "🔤", options: ["Science International", "System Investigations", "Système International", "Standard Imperial"], correct: 2, explanation: "SI stands for 'Système International d'unités' (International System of Units).", deeper: "The SI system was established in 1960 to provide a standardized measurement system worldwide." },
+            { q: "Q4", type: "FIB", text: "The SI unit of temperature is the _______.", image: "🌡️", answer: "Kelvin", explanation: "The Kelvin (K) is the SI base unit for temperature.", deeper: "Although Celsius is commonly used, the Kelvin scale is the official SI unit. 0 K = -273.15°C" },
+            { q: "Q5", type: "MC", text: "How many millimetres are in 5 centimetres?", image: "📐", options: ["5 mm", "50 mm", "500 mm", "0.5 mm"], correct: 1, explanation: "1 cm = 10 mm, so 5 cm = 50 mm", deeper: "Converting between units requires knowing the conversion factors: 1 cm = 10 mm, 1 m = 100 cm, 1 km = 1000 m" },
+            { q: "Q6", type: "MC", text: "Which is NOT an SI base unit?", image: "⚛️", options: ["Metre", "Kilogram", "Second", "Litre"], correct: 3, explanation: "Litre is a derived unit for volume, not a base unit. The SI base unit for volume is cubic metre (m³).", deeper: "SI has 7 base units: metre, kilogram, second, ampere, kelvin, mole, and candela. All others are derived from these." },
+            { q: "Q7", type: "FIB", text: "The _______ is used to measure the volume of liquids with precision.", image: "🧪", answer: "measuring cylinder", explanation: "A measuring cylinder is graduated to show volume in millilitres or litres.", deeper: "Measuring cylinders have graduations that allow you to read volume accurately. Always read at the meniscus (bottom of curved surface)." },
+            { q: "Q8", type: "MC", text: "What is the formula for calculating density?", image: "📊", options: ["Density = mass × volume", "Density = mass ÷ volume", "Density = volume ÷ mass", "Density = mass + volume"], correct: 1, explanation: "Density = mass / volume. The SI unit is kg/m³ or g/cm³", deeper: "Denser objects sink; less dense objects float. Water has a density of 1 g/cm³ at 4°C, which is why ice floats." },
+            { q: "Q9", type: "MC", text: "If a stone has a mass of 80 g and occupies 40 cm³, what is its density?", image: "🪨", options: ["2 g/cm³", "0.5 g/cm³", "3.2 g/cm³", "120 g/cm³"], correct: 0, explanation: "Density = 80 g ÷ 40 cm³ = 2 g/cm³", deeper: "To find unknown values: cover the variable you want. Density is a characteristic property that helps identify substances." },
+            { q: "Q10", type: "MC", text: "What is the SI unit of time?", image: "⏱️", options: ["Minute", "Hour", "Second", "Day"], correct: 2, explanation: "The second (s) is the SI base unit for time.", deeper: "Other time units are: 1 minute = 60 seconds, 1 hour = 3600 seconds. Scientists always use seconds in calculations." },
+            { q: "Q11", type: "FIB", text: "A ruler marked in centimetres and millimetres has a precision of _______ cm.", image: "📏", answer: "0.1", explanation: "The smallest division on a ruler is usually 1 mm = 0.1 cm, so uncertainty is ±0.05 cm", deeper: "Precision refers to the smallest division an instrument can measure. Uncertainty is half the smallest division." },
+            { q: "Q12", type: "MC", text: "What is 5 km in metres?", image: "🛣️", options: ["50 m", "500 m", "5000 m", "50000 m"], correct: 2, explanation: "1 km = 1000 m, so 5 km = 5000 m", deeper: "Conversion factors make it easy: multiply by 1000 to convert km to m, divide by 1000 to convert m to km." },
+            { q: "Q13", type: "MC", text: "Which measurement tool is most precise for measuring small objects?", image: "🔬", options: ["Metre ruler", "Measuring tape", "Vernier calliper", "Meter stick"], correct: 2, explanation: "Vernier callipers can measure to 0.1 mm precision, much finer than regular rulers.", deeper: "Precision instruments like Vernier callipers are used in engineering and science for accurate measurements of small dimensions." },
+            { q: "Q14", type: "FIB", text: "The _______ is a systematic error that occurs when an instrument is not calibrated correctly.", image: "⚙️", answer: "zero error", explanation: "Zero error means the instrument reads something when it should read zero.", deeper: "You can correct zero errors by noting them and adjusting your measurements accordingly. Systematic errors are consistent and predictable." },
+            { q: "Q15", type: "MC", text: "If you measure 5 times and get: 10.1, 10.2, 10.3, 10.2, 10.1 cm, what is the average?", image: "📈", options: ["10.1 cm", "10.18 cm", "10.2 cm", "10.3 cm"], correct: 1, explanation: "Average = (10.1 + 10.2 + 10.3 + 10.2 + 10.1) ÷ 5 = 51 ÷ 5 = 10.2 cm", deeper: "Taking multiple measurements and averaging reduces the effect of random errors. This is standard practice in science." },
+            { q: "Q16", type: "MC", text: "What is 2500 grams in kilograms?", image: "⚖️", options: ["0.25 kg", "2.5 kg", "25 kg", "250 kg"], correct: 1, explanation: "1 kg = 1000 g, so 2500 g = 2.5 kg", deeper: "Mass conversions: 1 kg = 1000 g, 1 g = 1000 mg. Always show your conversion factors in calculations." },
+            { q: "Q17", type: "FIB", text: "The _______ method is used to find the volume of irregular objects by water displacement.", image: "💧", answer: "displacement", explanation: "Place the object in water and measure the change in volume.", deeper: "Volume displacement = final water level - initial water level. This works for any object that doesn't dissolve in water." },
+            { q: "Q18", type: "MC", text: "Which correctly expresses 0.003 kg in grams?", image: "📦", options: ["3 g", "0.3 g", "30 g", "0.03 g"], correct: 1, explanation: "1 kg = 1000 g, so 0.003 kg = 0.003 × 1000 = 3 g", deeper: "Use a calculator or multiply: 0.003 × 1000 = 3. Moving the decimal point right 3 places also works for powers of 10." },
+            { q: "Q19", type: "MC", text: "What is the SI unit of volume?", image: "🧊", options: ["Litre", "Millilitre", "Cubic metre", "Gallon"], correct: 2, explanation: "The cubic metre (m³) is the SI unit. 1 m³ = 1000 litres", deeper: "Although litres are commonly used, the official SI unit is m³. 1 litre = 1 dm³ = 0.001 m³" },
+            { q: "Q20", type: "FIB", text: "The degree symbol (°) followed by C or K shows _______ measurement.", image: "🌡️", answer: "temperature", explanation: "°C is Celsius, °F is Fahrenheit, K is Kelvin", deeper: "Temperature measures the average kinetic energy of particles. The Kelvin scale starts at absolute zero (0 K = -273.15°C)." },
+            { q: "Q21", type: "MC", text: "If a liquid measures 25 mL in a measuring cylinder, how many cubic centimetres is that?", image: "🧬", options: ["2.5 cm³", "25 cm³", "250 cm³", "2500 cm³"], correct: 1, explanation: "1 mL = 1 cm³, so 25 mL = 25 cm³", deeper: "This equivalence makes conversions easy: millilitres and cubic centimetres are the same unit. 1000 mL = 1 litre = 1000 cm³" },
+            { q: "Q22", type: "MC", text: "What is the uncertainty of a measurement made with a ruler graduated to 1 mm?", image: "📏", options: ["±1 mm", "±0.5 mm", "±2 mm", "±0.1 mm"], correct: 1, explanation: "Uncertainty = smallest division ÷ 2 = 1 mm ÷ 2 = ±0.5 mm", deeper: "Always state measurement uncertainty. A reading of 10 cm with this ruler should be written as 10.0 ± 0.05 cm" },
+            { q: "Q23", type: "FIB", text: "The _______ is used to measure the time of events, often with precision to 0.01 second.", image: "⏱️", answer: "stopwatch", explanation: "A digital stopwatch gives precise timing for experiments.", deeper: "When starting and stopping a stopwatch, there's reaction time error. Using an average of multiple trials reduces this error." },
+            { q: "Q24", type: "MC", text: "A cube has sides of 2 cm. What is its volume?", image: "🎲", options: ["2 cm³", "4 cm³", "6 cm³", "8 cm³"], correct: 3, explanation: "Volume of cube = side³ = 2³ = 8 cm³", deeper: "Formula for cube: V = s³. For rectangular box: V = length × width × height. Always include units with your answer." },
+            { q: "Q25", type: "MC", text: "Which list is in the correct order from smallest to largest?", image: "📊", options: ["Millimetre, centimetre, metre, kilometre", "Kilometre, metre, centimetre, millimetre", "Centimetre, millimetre, metre, kilometre", "Metre, kilometre, millimetre, centimetre"], correct: 0, explanation: "1 mm < 1 cm < 1 m < 1 km", deeper: "Learn the metric prefixes: milli (1/1000), centi (1/100), kilo (1000). This helps with all SI unit conversions." },
+            { q: "Q26", type: "FIB", text: "When recording measurements, include the _______ mark on the measuring device.", image: "📍", answer: "zero", explanation: "Always measure from the zero mark to avoid systematic error.", deeper: "Some rulers have damage near the zero end. If so, start from the 1 cm mark and subtract 1 cm from your final measurement." },
+            { q: "Q27", type: "MC", text: "What is 45 mm in centimetres?", image: "📐", options: ["0.45 cm", "4.5 cm", "450 cm", "4500 cm"], correct: 1, explanation: "1 cm = 10 mm, so 45 mm = 4.5 cm", deeper: "To convert mm to cm, divide by 10. To convert cm to mm, multiply by 10. These conversions are used constantly in science." },
+            { q: "Q28", type: "MC", text: "Which is an example of precision in measurement?", image: "🎯", options: ["Measuring something multiple times", "Getting the same result each time you measure", "Measuring close to the true value", "Using different instruments"], correct: 1, explanation: "Precision is about consistency and reproducibility of measurements.", deeper: "Precision ≠ Accuracy. You can be precise (consistent) but inaccurate (wrong value). Good science requires both." },
+            { q: "Q29", type: "FIB", text: "The _______ is the smallest scale division on a measuring instrument.", image: "🔍", answer: "resolution", explanation: "Resolution determines the precision of measurements.", deeper: "Higher resolution instruments allow more precise measurements. A 0.1 mm scale is more precise than a 1 mm scale." },
+            { q: "Q30", type: "MC", text: "If a rectangular box is 10 cm long, 5 cm wide, and 2 cm tall, what is its volume?", image: "📦", options: ["17 cm³", "50 cm³", "100 cm³", "200 cm³"], correct: 2, explanation: "Volume = length × width × height = 10 × 5 × 2 = 100 cm³", deeper: "Always multiply all three dimensions. If dimensions are in different units, convert them first before multiplying." },
+            { q: "Q31", type: "MC", text: "What does accuracy mean in measurement?", image: "🎯", options: ["Getting the same result each time", "Getting close to the true value", "Using precise instruments", "Having small uncertainty"], correct: 1, explanation: "Accuracy is how close a measurement is to the true/accepted value.", deeper: "Accuracy is affected by systematic errors. Precision is affected by random errors. Good measurements should have both." },
+            { q: "Q32", type: "FIB", text: "The _______ is the difference between the measured value and the true value.", image: "📊", answer: "error", explanation: "Error quantifies how far a measurement is from the truth.", deeper: "Total error = systematic error + random error. Systematic errors are consistent; random errors vary unpredictably." },
+            { q: "Q33", type: "MC", text: "Converting 3.5 litres to millilitres gives:", image: "🧃", options: ["350 mL", "3500 mL", "35 mL", "35000 mL"], correct: 1, explanation: "1 litre = 1000 mL, so 3.5 litres = 3500 mL", deeper: "Multiplying by 1000 converts litres to millilitres. This makes sense: milli means 1/1000, so 1000 mL = 1 L" },
+            { q: "Q34", type: "MC", text: "Which statement is true about significant figures?", image: "📐", options: ["All zeros are significant", "Leading zeros are significant", "Trailing zeros in decimals are significant", "Trailing zeros in whole numbers are never significant"], correct: 2, explanation: "Trailing zeros after a decimal point are always significant. Example: 5.00 has 3 sig figs.", deeper: "Significant figures indicate precision. A ruler can typically measure to 2-3 significant figures." },
+            { q: "Q35", type: "FIB", text: "When using a graduated cylinder, read the volume at the _______ of the liquid (bottom of the curve).", image: "🧪", answer: "meniscus", explanation: "The meniscus is the curved surface of a liquid in a container.", deeper: "Always read at eye level. For most aqueous solutions, the meniscus is concave (curved downward at the edges)." },
+            { q: "Q36", type: "MC", text: "What is 1500 metres in kilometres?", image: "🛣️", options: ["0.15 km", "1.5 km", "15 km", "150 km"], correct: 1, explanation: "1 km = 1000 m, so 1500 m = 1.5 km", deeper: "Divide by 1000 to convert metres to kilometres. Remember: 1000 m = 1 km is a fundamental conversion." },
+            { q: "Q37", type: "MC", text: "Which measurement technique reduces random error?", image: "📊", options: ["Using one measurement", "Averaging multiple measurements", "Using a less precise instrument", "Taking measurements quickly"], correct: 1, explanation: "Taking multiple measurements and averaging reduces the effect of random variations.", deeper: "In professional science, we often take 3-5 measurements and average them. We also calculate standard deviation to show precision." },
+            { q: "Q38", type: "FIB", text: "The _______ is the range of values within which the true value likely lies.", image: "📈", answer: "uncertainty", explanation: "Uncertainty shows the limits of measurement precision.", deeper: "Always include uncertainty with your measurements: (value ± uncertainty) units. This shows how reliable your measurement is." },
+            { q: "Q39", type: "MC", text: "A scale shows 5.25 kg. Which digit has the most uncertainty?", image: "⚖️", options: ["5", "2", "The first 5", "The second 5"], correct: 3, explanation: "The last digit (rightmost) has the most uncertainty as it represents the smallest measured division.", deeper: "The rightmost digit is the least certain because it depends on the instrument's precision. Never report more significant figures than your instrument allows." },
+            { q: "Q40", type: "MC", text: "What is the SI base unit for mass?", image: "⚖️", options: ["Gram", "Kilogram", "Milligram", "Tonne"], correct: 1, explanation: "The kilogram (kg) is the SI base unit for mass.", deeper: "The kilogram is unique—it's the only base unit with a prefix (kilo). This is a historical quirk of the SI system." },
+            { q: "Q41", type: "FIB", text: "The _______ method involves pouring water into a graduated cylinder containing an object to measure its volume.", image: "💧", answer: "water displacement", explanation: "Also called the displacement method - measures volume of irregular objects.", deeper: "The volume of water displaced equals the volume of the object. This works because water takes the shape of its container." },
+            { q: "Q42", type: "MC", text: "Converting 8500 grams to kilograms:", image: "📦", options: ["0.85 kg", "8.5 kg", "85 kg", "850 kg"], correct: 1, explanation: "Divide by 1000: 8500 ÷ 1000 = 8.5 kg", deeper: "Gram to kilogram conversions are common. Remember the prefix: kilo = 1000. So 1 kg = 1000 g" },
+            { q: "Q43", type: "MC", text: "Which is the most important reason to take multiple measurements?", image: "📊", options: ["To waste time", "To reduce the effect of random errors", "To increase the final value", "To make calculations harder"], correct: 1, explanation: "Multiple measurements help identify and average out random variations.", deeper: "Random errors are unpredictable—sometimes high, sometimes low. Averaging cancels them out partially." },
+            { q: "Q44", type: "FIB", text: "The _______ is a simple machine used to measure length by comparing it to marked divisions.", image: "📏", answer: "ruler", explanation: "A ruler is marked with linear units (cm, mm, inches, etc.).", deeper: "Different rulers have different precision. A millimeter ruler is more precise than a centimeter ruler." },
+            { q: "Q45", type: "MC", text: "A thermometer shows 25°C. What is this in Kelvin?", image: "🌡️", options: ["25 K", "248 K", "298 K", "323 K"], correct: 2, explanation: "K = °C + 273.15, so 25 + 273 = 298 K (approximately)", deeper: "The Kelvin scale has the same size degree as Celsius but starts at absolute zero. This conversion is important in chemistry and physics." },
+            { q: "Q46", type: "MC", text: "What is the volume of a rectangular container that is 4 m × 3 m × 2 m?", image: "📦", options: ["9 m³", "14 m³", "24 m³", "48 m³"], correct: 2, explanation: "Volume = 4 × 3 × 2 = 24 m³", deeper: "When calculating volume of rectangular objects, multiply all three dimensions. Always include the cube unit (m³ not just m)." },
+            { q: "Q47", type: "FIB", text: "The difference between the highest and lowest measurements is called the _______.", image: "📊", answer: "range", explanation: "Range = highest value - lowest value", deeper: "Range shows the spread of measurements. A small range indicates good precision; a large range shows more variation." },
+            { q: "Q48", type: "MC", text: "Which factor is NOT important when choosing a measuring instrument?", image: "🔧", options: ["Precision needed", "Size of object", "Cost of instrument", "Colour of instrument"], correct: 3, explanation: "The colour doesn't affect the instrument's ability to measure. Precision, size, and accuracy are what matter.", deeper: "Choose instruments based on the precision you need, the size of what you're measuring, and the cost. Always select the most appropriate tool." },
+            { q: "Q49", type: "FIB", text: "A measurement is _______  if it gives nearly the same result each time you measure.", image: "🎯", answer: "precise", explanation: "Precise measurements are consistent and repeatable.", deeper: "A broken scale might give the same reading every time (precise) but not the true value (inaccurate). Precision alone isn't enough." },
+            { q: "Q50", type: "MC", text: "What is 0.75 metres in centimetres?", image: "📏", options: ["7.5 cm", "75 cm", "750 cm", "7500 cm"], correct: 1, explanation: "1 m = 100 cm, so 0.75 m = 75 cm", deeper: "Multiplying by 100 converts metres to centimetres. This is the same as: 0.75 × 100 = 75. Always include units with your answer." }
+        ];
+
+        let currentScreen = 0;
+        let score = 0;
+        const questionsPerScreen = 2;
+        const totalQuestions = quizData.length;
+
+        function renderScreen() {
+            const startIdx = currentScreen * questionsPerScreen;
+            const endIdx = Math.min(startIdx + questionsPerScreen, totalQuestions);
+            const questionsToShow = quizData.slice(startIdx, endIdx);
+
+            let html = '';
+            questionsToShow.forEach((q, idx) => {
+                const qIdx = startIdx + idx;
+                html += `
+                    <div class="question-card">
+                        <div class="q-number">${q.q}</div>
+                        <div class="q-text">${q.text}</div>
+                        <div class="q-image">${q.image}</div>
+                        
+                        <div id="options-${qIdx}">
+                `;
+
+                if (q.type === "MC") {
+                    html += '<div class="options">';
+                    q.options.forEach((opt, i) => {
+                        html += `
+                            <label class="option">
+                                <input type="radio" name="answer-${qIdx}" value="${i}">
+                                <span class="option-text">${opt}</span>
+                            </label>
+                        `;
+                    });
+                    html += '</div>';
+                } else if (q.type === "FIB") {
+                    html += `<input type="text" class="fill-input" id="fib-${qIdx}" placeholder="Type your answer...">`;
+                }
+
+                html += `
+                        </div>
+                        <button class="submit-btn" onclick="submitAnswer(${qIdx})">Submit</button>
+                        <div class="feedback" id="feedback-${qIdx}"></div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('quizContainer').innerHTML = html;
+            updateProgress();
+            updateButtons();
+        }
+
+        function submitAnswer(qIdx) {
+            const q = quizData[qIdx];
+            let isCorrect = false;
+
+            if (q.type === "MC") {
+                const selected = document.querySelector(`input[name="answer-${qIdx}"]:checked`);
+                if (!selected) {
+                    alert('Please select an option!');
+                    return;
+                }
+                isCorrect = parseInt(selected.value) === q.correct;
+            } else if (q.type === "FIB") {
+                const input = document.getElementById(`fib-${qIdx}`);
+                isCorrect = input.value.toLowerCase().trim() === q.answer.toLowerCase().trim();
+            }
+
+            const feedbackEl = document.getElementById(`feedback-${qIdx}`);
+            if (isCorrect) {
+                score++;
+                feedbackEl.className = 'feedback correct';
+                feedbackEl.innerHTML = `
+                    <div class="feedback-title">✅ Correct!</div>
+                    <p>${q.explanation}</p>
+                    <div class="deeper-learning">🧠 ${q.deeper}</div>
+                `;
+            } else {
+                feedbackEl.className = 'feedback incorrect';
+                const correctAnswer = q.type === "MC" ? q.options[q.correct] : q.answer;
+                feedbackEl.innerHTML = `
+                    <div class="feedback-title">❌ Incorrect</div>
+                    <p><strong>Correct answer:</strong> ${correctAnswer}</p>
+                    <p>${q.explanation}</p>
+                    <div class="deeper-learning">🧠 ${q.deeper}</div>
+                `;
+            }
+
+            document.querySelector(`#options-${qIdx}`).style.pointerEvents = 'none';
+            document.querySelector(`button[onclick="submitAnswer(${qIdx})"]`).disabled = true;
+            updateScore();
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            const answered = Math.min((currentScreen + 1) * questionsPerScreen, totalQuestions);
+            const accuracy = Math.round((score / answered) * 100);
+            document.getElementById('accuracy').textContent = accuracy;
+        }
+
+        function nextScreen() {
+            if (currentScreen < Math.ceil(totalQuestions / questionsPerScreen) - 1) {
+                currentScreen++;
+                renderScreen();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            } else {
+                showCompletion();
+            }
+        }
+
+        function previousScreen() {
+            if (currentScreen > 0) {
+                currentScreen--;
+                renderScreen();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentScreen * questionsPerScreen + 1) / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentQ').textContent = Math.min(currentScreen * questionsPerScreen + 1, totalQuestions);
+
+            document.getElementById('prevBtn').disabled = currentScreen === 0;
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function showCompletion() {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            let message = '';
+            if (percentage >= 90) message = '🌟 Excellent! You mastered this unit!';
+            else if (percentage >= 80) message = '🎉 Great job! Strong understanding!';
+            else if (percentage >= 70) message = '👍 Good work! Keep practicing!';
+            else if (percentage >= 60) message = '📚 You\'re learning! Review concepts!';
+            else message = '💪 Keep studying! Try again!';
+
+            document.getElementById('quizContainer').innerHTML = '';
+            document.getElementById('completionContainer').innerHTML = `
+                <div class="completion">
+                    <div class="completion-icon">🏆</div>
+                    <h2>Unit 1 Complete!</h2>
+                    <div class="score-box">
+                        <div>Your Score</div>
+                        <div class="score-number">${score}/50</div>
+                        <div>${percentage}%</div>
+                    </div>
+                    <p>${message}</p>
+                    <a href="master_index.html" class="completion-btn">← Back to Units</a>
+                </div>
+            `;
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        renderScreen();
+    </script>
+</body>
+</html>

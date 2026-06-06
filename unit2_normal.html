@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2: Cells & Living Things - Standard Level</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px;
+        }
+        .container { max-width: 1800px; margin: 0 auto; }
+        header { text-align: center; color: white; margin-bottom: 35px; }
+        h1 { font-size: 2.8em; margin-bottom: 10px; font-weight: 700; }
+        .unit-info { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.1); padding: 20px 30px; border-radius: 10px; backdrop-filter: blur(10px); margin-bottom: 20px; }
+        .stats { display: flex; gap: 40px; color: white; }
+        .stat { text-align: center; }
+        .stat-label { font-size: 0.85em; opacity: 0.8; text-transform: uppercase; }
+        .stat-value { font-size: 1.8em; font-weight: 700; margin-top: 5px; }
+        .progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; margin-top: 10px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #4CAF50, #45a049); transition: width 0.3s ease; }
+        .questions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(530px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .question-card { background: white; border-radius: 14px; padding: 25px; box-shadow: 0 15px 45px rgba(0,0,0,0.2); animation: fadeInUp 0.5s ease-out; }
+        .q-number { font-size: 1.8em; font-weight: 700; color: #667eea; margin-bottom: 12px; }
+        .q-text { font-size: 1.15em; font-weight: 600; color: #333; margin-bottom: 15px; line-height: 1.6; }
+        .q-media { width: 100%; height: 180px; background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 2px solid #ddd; overflow: hidden; }
+        .q-media img { max-width: 100%; max-height: 100%; object-fit: cover; }
+        .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        .option { display: flex; align-items: center; padding: 12px 14px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.3s; background: #f9f9f9; }
+        .option:hover { border-color: #667eea; background: #f0f5ff; transform: translateX(5px); }
+        .option input[type="radio"] { width: 18px; height: 18px; margin-right: 12px; cursor: pointer; accent-color: #667eea; }
+        .fill-input { width: 100%; padding: 10px 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 1.05em; font-family: inherit; margin-bottom: 15px; }
+        .fill-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .submit-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 11px 22px; border-radius: 8px; font-size: 0.95em; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.3); }
+        .submit-btn:disabled { opacity: 0.6; }
+        .feedback { margin-top: 15px; padding: 14px; border-radius: 8px; display: none; font-size: 0.98em; line-height: 1.5; }
+        .feedback.correct { background: #e8f5e9; border-left: 4px solid #4CAF50; color: #2e7d32; display: block; }
+        .feedback.incorrect { background: #ffebee; border-left: 4px solid #f44336; color: #c62828; display: block; }
+        .feedback-title { font-weight: 700; margin-bottom: 6px; }
+        .deeper-learning { background: #f0f5ff; padding: 10px; border-radius: 6px; margin-top: 8px; border-left: 4px solid #667eea; font-style: italic; color: #555; font-size: 0.95em; }
+        .controls { display: flex; justify-content: center; gap: 15px; margin-top: 40px; flex-wrap: wrap; }
+        .nav-btn { background: white; color: #667eea; border: 2px solid #667eea; padding: 12px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 1.05em; transition: all 0.3s; }
+        .nav-btn:hover { background: #667eea; color: white; }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .completion { text-align: center; background: white; padding: 60px 40px; border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-width: 600px; margin: 50px auto; }
+        .completion-icon { font-size: 5em; margin-bottom: 20px; }
+        .completion h2 { color: #667eea; font-size: 2.5em; margin-bottom: 15px; }
+        .score-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin: 25px 0; }
+        .score-number { font-size: 2.5em; font-weight: 700; }
+        a.back-btn { display: inline-block; color: white; text-decoration: none; margin-bottom: 20px; font-size: 1.1em; padding: 10px 20px; background: rgba(255,255,255,0.2); border-radius: 8px; transition: all 0.3s; }
+        a.back-btn:hover { background: rgba(255,255,255,0.3); transform: translateX(-5px); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 1200px) { .questions-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="master_index.html" class="back-btn">← Back to Units</a>
+        <header>
+            <h1>🧬 Unit 2: Cells & Living Things</h1>
+            <p style="font-size: 1.2em; opacity: 0.95;">Standard Level - 50 Questions</p>
+        </header>
+        <div class="unit-info">
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">Progress</div>
+                    <div class="stat-value"><span id="currentQ">1</span>/50</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value"><span id="score">0</span></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-value"><span id="accuracy">0</span>%</div>
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+        <div id="quizContainer" class="questions-grid"></div>
+        <div id="completionContainer"></div>
+        <div class="controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousScreen()" disabled>← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextScreen()" style="display:none;">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            { q: "Q1", type: "MC", text: "What is the basic unit of life?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Animal_cell_structure_en.svg/640px-Animal_cell_structure_en.svg.png", options: ["Tissue", "Organ", "Cell", "Organism"], correct: 2, explanation: "The cell is the smallest unit of life capable of functioning independently.", deeper: "All living organisms are made of cells. Single-celled organisms like bacteria are complete living cells." },
+            
+            { q: "Q2", type: "MC", text: "Which organelle is responsible for producing energy?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Mitochondrion_structure.svg/640px-Mitochondrion_structure.svg.png", options: ["Nucleus", "Mitochondrion", "Ribosome", "Golgi apparatus"], correct: 1, explanation: "Mitochondria produce ATP through cellular respiration, providing energy for the cell.", deeper: "Cells with high energy demands have many mitochondria. Muscle and nerve cells have thousands!" },
+
+            { q: "Q3", type: "FIB", text: "The _______ controls cell activities and contains genetic material.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Cell_nucleus.svg/640px-Cell_nucleus.svg.png", answer: "nucleus", explanation: "The nucleus is the control center of the cell, containing DNA.", deeper: "The nucleus is surrounded by a membrane that controls what enters and exits." },
+
+            { q: "Q4", type: "MC", text: "Which is found in plant cells but NOT in animal cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Plant_cell_structure_en.svg/640px-Plant_cell_structure_en.svg.png", options: ["Mitochondrion", "Ribosome", "Cell wall", "Cell membrane"], correct: 2, explanation: "Plant cells have a cell wall made of cellulose for structural support.", deeper: "The cell wall is rigid and gives plants their shape. Animal cells lack this wall." },
+
+            { q: "Q5", type: "MC", text: "What is the function of ribosomes?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Ribosome_structure.svg/640px-Ribosome_structure.svg.png", options: ["Store energy", "Make proteins", "Control metabolism", "Transport materials"], correct: 1, explanation: "Ribosomes are sites of protein synthesis where amino acids are assembled.", deeper: "Ribosomes read mRNA instructions from the nucleus and build proteins accordingly." },
+
+            { q: "Q6", type: "MC", text: "Which organelle stores water, nutrients, and waste in plant cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Plant_cell_vacuole.svg/640px-Plant_cell_vacuole.svg.png", options: ["Nucleus", "Chloroplast", "Vacuole", "Lysosome"], correct: 2, explanation: "The large central vacuole in plant cells maintains turgor pressure and stores substances.", deeper: "When plants lose water, the vacuole shrinks and the plant wilts." },
+
+            { q: "Q7", type: "FIB", text: "The _______ is a rigid structure that surrounds plant cells.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Plant_cell_wall.svg/640px-Plant_cell_wall.svg.png", answer: "cell wall", explanation: "The cell wall provides structural support and protection to plant cells.", deeper: "Made of cellulose, the cell wall is much thicker than the cell membrane." },
+
+            { q: "Q8", type: "MC", text: "What do chloroplasts contain that gives plants their green color?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Chloroplast_structure.svg/640px-Chloroplast_structure.svg.png", options: ["Hemoglobin", "Chlorophyll", "Carotenoids", "Melanin"], correct: 1, explanation: "Chlorophyll is a pigment that absorbs light energy for photosynthesis.", deeper: "Different plants have different proportions of chlorophyll and other pigments." },
+
+            { q: "Q9", type: "MC", text: "Which organelle modifies and packages proteins?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Golgi_apparatus_structure.svg/640px-Golgi_apparatus_structure.svg.png", options: ["Rough ER", "Golgi apparatus", "Lysosome", "Centrosome"], correct: 1, explanation: "The Golgi apparatus receives proteins from the ER and modifies them for export.", deeper: "The Golgi acts like a postal service, packaging proteins into vesicles." },
+
+            { q: "Q10", type: "MC", text: "What is the name of the process where cells divide?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Mitosis_4.jpeg/640px-Mitosis_4.jpeg", options: ["Photosynthesis", "Respiration", "Mitosis", "Fermentation"], correct: 2, explanation: "Mitosis is the process where one cell divides into two identical daughter cells.", deeper: "Mitosis happens in all cells for growth and repair. Meiosis produces sex cells." },
+
+            { q: "Q11", type: "FIB", text: "The _______ is a thin membrane that controls what enters and leaves the cell.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Cell_membrane.svg/640px-Cell_membrane.svg.png", answer: "cell membrane", explanation: "The cell membrane is selectively permeable, allowing some substances through.", deeper: "The membrane is made of lipids and proteins that work together." },
+
+            { q: "Q12", type: "MC", text: "Which organelle breaks down waste and debris in cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Lysosome_diagram.svg/640px-Lysosome_diagram.svg.png", options: ["Mitochondrion", "Lysosome", "Vacuole", "Ribosome"], correct: 1, explanation: "Lysosomes contain digestive enzymes that break down cellular waste.", deeper: "Lysosomes are like the cell's garbage disposal system." },
+
+            { q: "Q13", type: "MC", text: "What is the correct order from smallest to largest?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Biological_organization.svg/640px-Biological_organization.svg.png", options: ["Organism, organ, tissue, cell", "Cell, tissue, organ, organism", "Organ, tissue, cell, organism", "Tissue, cell, organism, organ"], correct: 1, explanation: "Cells → Tissues → Organs → Organisms shows the hierarchy of organization.", deeper: "Understanding this organization helps explain how bodies work." },
+
+            { q: "Q14", type: "MC", text: "Which best describes prokaryotic cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Prokaryote_cell_diagram.svg/640px-Prokaryote_cell_diagram.svg.png", options: ["Have a nucleus", "No nucleus, simpler structure", "Have many organelles", "Only in animals"], correct: 1, explanation: "Prokaryotic cells (bacteria) lack a nucleus and membrane-bound organelles.", deeper: "Prokaryotes are simpler but incredibly successful - they've been around for 3.5 billion years!" },
+
+            { q: "Q15", type: "FIB", text: "The _______ is the gel-like substance inside cells where organelles float.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Cytoplasm_diagram.svg/640px-Cytoplasm_diagram.svg.png", answer: "cytoplasm", explanation: "Cytoplasm contains water, salts, and proteins where cellular reactions occur.", deeper: "The cytoplasm is constantly moving, transport materials and nutrients." },
+
+            { q: "Q16", type: "MC", text: "What process do plants use to make their own food?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Photosynthesis_diagram.svg/640px-Photosynthesis_diagram.svg.png", options: ["Respiration", "Photosynthesis", "Fermentation", "Digestion"], correct: 1, explanation: "Photosynthesis uses sunlight, water, and CO2 to make glucose (food).", deeper: "This is why plants are called producers - they make energy from sunlight!" },
+
+            { q: "Q17", type: "MC", text: "Which statement about cells is true?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cell_theory.svg/640px-Cell_theory.svg.png", options: ["All cells are large", "All living things contain cells", "Cells can exist without a nucleus", "Not all organisms have cells"], correct: 1, explanation: "Cell Theory: all living organisms are made of cells.", deeper: "This is one of the most important principles in biology!" },
+
+            { q: "Q18", type: "FIB", text: "The _______ is the network of membranes where proteins are made.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Rough_endoplasmic_reticulum.svg/640px-Rough_endoplasmic_reticulum.svg.png", answer: "endoplasmic reticulum", explanation: "The rough ER has ribosomes attached and is where many proteins are made.", deeper: "The smooth ER lacks ribosomes and makes lipids." },
+
+            { q: "Q19", type: "MC", text: "How do multicellular organisms benefit from having specialized cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Cell_specialization.svg/640px-Cell_specialization.svg.png", options: ["All cells are identical", "Each cell type performs specific functions", "It makes organisms larger", "No real benefit"], correct: 1, explanation: "Specialized cells are more efficient at their specific jobs, improving organism function.", deeper: "Your nerve cells are different from muscle cells, which are different from skin cells." },
+
+            { q: "Q20", type: "MC", text: "What is a tissue?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Tissue_types.svg/640px-Tissue_types.svg.png", options: ["A single cell", "A group of similar cells working together", "An organ", "An organism"], correct: 1, explanation: "Tissues are groups of similar cells with a common function.", deeper: "Your skin is a tissue made of many epithelial cells working together." },
+
+            { q: "Q21", type: "FIB", text: "The _______ is where DNA is stored in the nucleus.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Chromosome.svg/640px-Chromosome.svg.png", answer: "chromosome", explanation: "Chromosomes are structures made of DNA and proteins.", deeper: "Humans have 46 chromosomes - 23 from each parent." },
+
+            { q: "Q22", type: "MC", text: "Which organelle would you find MORE of in muscle cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Muscle_cell_mitochondria.svg/640px-Muscle_cell_mitochondria.svg.png", options: ["Ribosomes", "Mitochondria", "Lysosomes", "Vacuoles"], correct: 1, explanation: "Muscle cells need lots of ATP for contraction, so they have many mitochondria.", deeper: "This is why active cells have more mitochondria - they need more energy!" },
+
+            { q: "Q23", type: "MC", text: "What is the main difference between plant and animal cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Plant_and_animal_cells.svg/640px-Plant_and_animal_cells.svg.png", options: ["Plant cells have no nucleus", "Animal cells are smaller", "Plant cells have cell wall and large vacuole", "No real difference"], correct: 2, explanation: "Plant cells have a rigid cell wall and large central vacuole; animal cells do not.", deeper: "These adaptations help plants stay firm and store water." },
+
+            { q: "Q24", type: "FIB", text: "The process where organisms grow by making new cells is called _______.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Cell_division.svg/640px-Cell_division.svg.png", answer: "growth", explanation: "Growth occurs through cell division and enlargement.", deeper: "Your body replaces about 330 billion cells per day through cell division!" },
+
+            { q: "Q25", type: "MC", text: "Which is an example of a prokaryotic organism?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Bacteria.svg/640px-Bacteria.svg.png", options: ["Plant", "Animal", "Bacteria", "Fungi"], correct: 2, explanation: "Bacteria are prokaryotes with no nucleus or membrane-bound organelles.", deeper: "Bacteria are found everywhere - soil, water, even inside you!" },
+
+            { q: "Q26", type: "MC", text: "What happens during respiration in mitochondria?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Cellular_respiration.svg/640px-Cellular_respiration.svg.png", options: ["Makes glucose", "Breaks down glucose to release energy", "Makes oxygen", "Stores energy"], correct: 1, explanation: "Cellular respiration breaks down glucose and releases energy in the form of ATP.", deeper: "This is the opposite of photosynthesis - it releases energy instead of storing it." },
+
+            { q: "Q27", type: "FIB", text: "The _______ is the gel inside the nucleus that contains DNA.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Nuclear_matrix.svg/640px-Nuclear_matrix.svg.png", answer: "nucleoplasm", explanation: "Nucleoplasm is the liquid substance inside the nucleus.", deeper: "It's similar to cytoplasm but exists specifically inside the nucleus." },
+
+            { q: "Q28", type: "MC", text: "Which statement about cell division is correct?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Phases_of_Mitosis.svg/640px-Phases_of_Mitosis.svg.png", options: ["Cells divide randomly", "Cell division produces identical cells (mitosis)", "Only plant cells divide", "Division is permanent"], correct: 1, explanation: "Mitosis produces two identical daughter cells from one parent cell.", deeper: "This is how your body grows and repairs itself." },
+
+            { q: "Q29", type: "MC", text: "What is the main function of the cell membrane?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Cell_membrane.svg/640px-Cell_membrane.svg.png", options: ["Make energy", "Control what enters/leaves cell", "Store DNA", "Break down waste"], correct: 1, explanation: "The cell membrane is selectively permeable and protects the cell.", deeper: "The membrane uses active transport to move some substances against concentration gradients." },
+
+            { q: "Q30", type: "FIB", text: "The _______ is a group of organs working together to perform a function.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Organ_system.svg/640px-Organ_system.svg.png", answer: "organ system", explanation: "Organ systems like the digestive system work together.", deeper: "Your body has 11 major organ systems working in coordination." },
+
+            { q: "Q31", type: "MC", text: "Which organelle is ONLY found in animal cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Centrosome_diagram.svg/640px-Centrosome_diagram.svg.png", options: ["Chloroplast", "Centrosome", "Ribosome", "Golgi apparatus"], correct: 1, explanation: "Centrosomes help organize cell division in animal cells.", deeper: "Plants don't need centrosomes because their cell walls provide rigidity." },
+
+            { q: "Q32", type: "MC", text: "What gives red blood cells their color?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Red_blood_cells.svg/640px-Red_blood_cells.svg.png", options: ["Hemoglobin", "Chlorophyll", "Myoglobin", "Carotenoids"], correct: 0, explanation: "Hemoglobin is a protein that carries oxygen and gives blood its red color.", deeper: "Different animals have different oxygen-carrying proteins." },
+
+            { q: "Q33", type: "FIB", text: "The _______ is the basic functional unit of life.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Animal_cell_structure_en.svg/640px-Animal_cell_structure_en.svg.png", answer: "cell", explanation: "Cells are the smallest structures that can perform all life functions.", deeper: "This is a core principle of biology that explains how life works." },
+
+            { q: "Q34", type: "MC", text: "Which process is photosynthesis the opposite of?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Cellular_respiration.svg/640px-Cellular_respiration.svg.png", options: ["Fermentation", "Respiration", "Digestion", "Photosynthesis"], correct: 1, explanation: "Photosynthesis stores energy (uses light), respiration releases energy (breaks down glucose).", deeper: "Together, these processes cycle energy through the biosphere." },
+
+            { q: "Q35", type: "MC", text: "What is the primary role of the nucleus in a cell?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Cell_nucleus.svg/640px-Cell_nucleus.svg.png", options: ["Make ATP", "Store water", "Control cell activities and store DNA", "Break down waste"], correct: 2, explanation: "The nucleus is the control center, directing all cell activities.", deeper: "Without a nucleus, a cell can't maintain itself or reproduce." },
+
+            { q: "Q36", type: "FIB", text: "The _______ is the process where plants absorb light energy to make food.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Photosynthesis_diagram.svg/640px-Photosynthesis_diagram.svg.png", answer: "photosynthesis", explanation: "Photosynthesis converts light energy into chemical energy (glucose).", deeper: "This is how sunlight energy enters the food chain!" },
+
+            { q: "Q37", type: "MC", text: "Which organelle is like the cell's power plant?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Mitochondrion_structure.svg/640px-Mitochondrion_structure.svg.png", options: ["Nucleus", "Ribosome", "Mitochondrion", "Golgi apparatus"], correct: 2, explanation: "Mitochondria produce ATP through cellular respiration.", deeper: "Cells can't function without energy from mitochondria." },
+
+            { q: "Q38", type: "MC", text: "What do all cells have in common?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cell_theory.svg/640px-Cell_theory.svg.png", options: ["They are green", "They have a nucleus", "Cell membrane and cytoplasm", "They are the same size"], correct: 2, explanation: "All cells have a cell membrane and cytoplasm.", deeper: "Even prokaryotic cells have these two basic structures." },
+
+            { q: "Q39", type: "FIB", text: "The _______ is responsible for protecting and controlling what enters the cell.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Cell_membrane.svg/640px-Cell_membrane.svg.png", answer: "cell membrane", explanation: "The cell membrane is a selective barrier protecting the cell.", deeper: "The membrane is made of a phospholipid bilayer with embedded proteins." },
+
+            { q: "Q40", type: "MC", text: "Which organelles are found in BOTH plant and animal cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Plant_and_animal_cells.svg/640px-Plant_and_animal_cells.svg.png", options: ["Cell wall and chloroplast", "Nucleus and mitochondrion", "Vacuole and ribosome", "Cell wall and vacuole"], correct: 1, explanation: "Nucleus and mitochondria are found in all eukaryotic cells.", deeper: "Both plant and animal cells need a control center and energy production." },
+
+            { q: "Q41", type: "MC", text: "What is the primary function of the rough endoplasmic reticulum?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Rough_endoplasmic_reticulum.svg/640px-Rough_endoplasmic_reticulum.svg.png", options: ["Store lipids", "Make proteins", "Make energy", "Break down waste"], correct: 1, explanation: "Rough ER has ribosomes and specializes in protein synthesis.", deeper: "The ribosomes attached to it make it look 'rough' under a microscope." },
+
+            { q: "Q42", type: "FIB", text: "The _______ is a membrane-bound structure that divides the cell into compartments.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Animal_cell_structure_en.svg/640px-Animal_cell_structure_en.svg.png", answer: "organelle", explanation: "Organelles are specialized structures that perform specific functions.", deeper: "Each organelle is like a specialized organ in a tiny cellular city." },
+
+            { q: "Q43", type: "MC", text: "How are cells from different tissues specialized differently?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Cell_specialization.svg/640px-Cell_specialization.svg.png", options: ["They don't - all cells are the same", "They have different organelles and functions", "Only plant cells specialize", "Size makes them different"], correct: 1, explanation: "Different cell types have different organelles depending on their function.", deeper: "Nerve cells have many organelles for fast communication; skin cells focus on protection." },
+
+            { q: "Q44", type: "MC", text: "What is the main advantage of having a nucleus?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Cell_nucleus.svg/640px-Cell_nucleus.svg.png", options: ["Stores water", "Protects and organizes DNA", "Makes energy", "Breaks down waste"], correct: 1, explanation: "The nucleus protects DNA and controls when genes are expressed.", deeper: "This organization allows complex organisms to develop and function." },
+
+            { q: "Q45", type: "FIB", text: "The _______ is the basic structural and functional unit of plants.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Plant_cell_structure_en.svg/640px-Plant_cell_structure_en.svg.png", answer: "plant cell", explanation: "Plant cells are the basic units making up plant tissues.", deeper: "Plant cells are optimized for photosynthesis and structural support." },
+
+            { q: "Q46", type: "MC", text: "Which organelle stores genetic information in eukaryotic cells?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Cell_nucleus.svg/640px-Cell_nucleus.svg.png", options: ["Ribosome", "Mitochondrion", "Nucleus", "Golgi apparatus"], correct: 2, explanation: "The nucleus contains DNA where genetic information is stored.", deeper: "DNA controls the production of proteins that make you who you are." },
+
+            { q: "Q47", type: "MC", text: "What does the smooth endoplasmic reticulum do?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Smooth_endoplasmic_reticulum.svg/640px-Smooth_endoplasmic_reticulum.svg.png", options: ["Make proteins", "Make lipids and detoxify", "Break down waste", "Store energy"], correct: 1, explanation: "Smooth ER makes lipids and can detoxify harmful substances.", deeper: "Liver cells have lots of smooth ER for detoxification." },
+
+            { q: "Q48", type: "FIB", text: "The _______ is a structure that contains enzymes and breaks down cellular waste.", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Lysosome_diagram.svg/640px-Lysosome_diagram.svg.png", answer: "lysosome", explanation: "Lysosomes are the 'garbage disposal' of the cell.", deeper: "They digest old organelles, bacteria, and other cellular debris." },
+
+            { q: "Q49", type: "MC", text: "How does cell size limit affect cell function?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Cell_size_limits.svg/640px-Cell_size_limits.svg.png", options: ["No relationship", "Larger is always better", "Surface area-to-volume ratio limits nutrient exchange", "Cells have no size limits"], correct: 2, explanation: "Larger cells have lower surface area-to-volume ratios, limiting nutrient exchange.", deeper: "This is why cells can't grow infinitely - they must divide!" },
+
+            { q: "Q50", type: "MC", text: "What happens to a plant cell placed in pure water?", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Plant_cell_plasmolysis.svg/640px-Plant_cell_plasmolysis.svg.png", options: ["It shrinks", "Water enters, cell becomes turgid", "Nothing happens", "Cell wall bursts"], correct: 1, explanation: "Water enters by osmosis, making the cell turgid (firm and stiff).", deeper: "This is why plants need water - it keeps them firm and upright!" }
+        ];
+
+        let currentScreen = 0;
+        let score = 0;
+        const questionsPerScreen = 3;
+        const totalQuestions = quizData.length;
+
+        function renderScreen() {
+            const startIdx = currentScreen * questionsPerScreen;
+            const endIdx = Math.min(startIdx + questionsPerScreen, totalQuestions);
+            const questionsToShow = quizData.slice(startIdx, endIdx);
+
+            let html = '';
+            questionsToShow.forEach((q, idx) => {
+                const qIdx = startIdx + idx;
+                html += `
+                    <div class="question-card">
+                        <div class="q-number">${q.q}</div>
+                        <div class="q-text">${q.text}</div>
+                        <div class="q-media">
+                            <img src="${q.image}" alt="Question image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23ddd%22 width=%22200%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImage%3C/text%3E%3C/svg%3E'" />
+                        </div>
+                        <div id="options-${qIdx}">
+                `;
+
+                if (q.type === "MC") {
+                    html += '<div class="options">';
+                    q.options.forEach((opt, i) => {
+                        html += `
+                            <label class="option">
+                                <input type="radio" name="answer-${qIdx}" value="${i}">
+                                <span>${opt}</span>
+                            </label>
+                        `;
+                    });
+                    html += '</div>';
+                } else if (q.type === "FIB") {
+                    html += `<input type="text" class="fill-input" id="fib-${qIdx}" placeholder="Type your answer...">`;
+                }
+
+                html += `
+                        </div>
+                        <button class="submit-btn" onclick="submitAnswer(${qIdx})">Submit</button>
+                        <div class="feedback" id="feedback-${qIdx}"></div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('quizContainer').innerHTML = html;
+            updateProgress();
+            updateButtons();
+        }
+
+        function submitAnswer(qIdx) {
+            const q = quizData[qIdx];
+            let isCorrect = false;
+
+            if (q.type === "MC") {
+                const selected = document.querySelector(`input[name="answer-${qIdx}"]:checked`);
+                if (!selected) { alert('Please select an option!'); return; }
+                isCorrect = parseInt(selected.value) === q.correct;
+            } else if (q.type === "FIB") {
+                const input = document.getElementById(`fib-${qIdx}`);
+                isCorrect = input.value.toLowerCase().trim() === q.answer.toLowerCase().trim();
+            }
+
+            const feedbackEl = document.getElementById(`feedback-${qIdx}`);
+            if (isCorrect) {
+                score++;
+                feedbackEl.className = 'feedback correct';
+                feedbackEl.innerHTML = `<div class="feedback-title">✅ Correct!</div><p>${q.explanation}</p><div class="deeper-learning">🧠 ${q.deeper}</div>`;
+            } else {
+                feedbackEl.className = 'feedback incorrect';
+                const correctAnswer = q.type === "MC" ? q.options[q.correct] : q.answer;
+                feedbackEl.innerHTML = `<div class="feedback-title">❌ Incorrect</div><p><strong>Correct answer:</strong> ${correctAnswer}</p><p>${q.explanation}</p><div class="deeper-learning">🧠 ${q.deeper}</div>`;
+            }
+
+            document.querySelector(`#options-${qIdx}`).style.pointerEvents = 'none';
+            document.querySelector(`button[onclick="submitAnswer(${qIdx})"]`).disabled = true;
+            updateScore();
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+            const answered = Math.min((currentScreen + 1) * questionsPerScreen, totalQuestions);
+            const accuracy = Math.round((score / answered) * 100);
+            document.getElementById('accuracy').textContent = accuracy;
+        }
+
+        function nextScreen() {
+            if (currentScreen < Math.ceil(totalQuestions / questionsPerScreen) - 1) {
+                currentScreen++;
+                renderScreen();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            } else {
+                showCompletion();
+            }
+        }
+
+        function previousScreen() {
+            if (currentScreen > 0) {
+                currentScreen--;
+                renderScreen();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentScreen * questionsPerScreen + 1) / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentQ').textContent = Math.min(currentScreen * questionsPerScreen + 1, totalQuestions);
+            document.getElementById('prevBtn').disabled = currentScreen === 0;
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function showCompletion() {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            let message = percentage >= 90 ? '🌟 Excellent! Cells mastered!' : percentage >= 80 ? '🎉 Great job!' : '👍 Good work!';
+            document.getElementById('quizContainer').innerHTML = '';
+            document.getElementById('completionContainer').innerHTML = `
+                <div class="completion">
+                    <div class="completion-icon">🧬</div>
+                    <h2>Unit 2 Complete!</h2>
+                    <div class="score-box">
+                        <div>Your Score</div>
+                        <div class="score-number">${score}/50</div>
+                        <div>${percentage}%</div>
+                    </div>
+                    <p>${message}</p>
+                    <a href="master_index.html" style="display:inline-block; color: #667eea; text-decoration: none; margin-top: 20px; padding: 12px 30px; border: 2px solid #667eea; border-radius: 8px; font-weight: 600;">← Back to Units</a>
+                </div>
+            `;
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        renderScreen();
+    </script>
+</body>
+</html>
