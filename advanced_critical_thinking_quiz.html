@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Science Quiz - Critical Thinking Edition</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 25px;
+            animation: slideDown 0.6s ease-out;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px 25px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        #quizContainer {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            margin: 20px 0;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 16px;
+            padding: 45px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.5s ease-out;
+            max-width: 1050px;
+            width: 100%;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .unit-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-type {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .difficulty-level {
+            background: #fff3e0;
+            color: #e65100;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .question-number {
+            font-size: 3.2em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.5em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .scenario-box {
+            background: #f5f7fa;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-style: italic;
+            color: #555;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            padding: 16px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+            font-size: 1.1em;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f5ff;
+            transform: translateX(5px);
+        }
+
+        .option input[type="radio"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 18px;
+            margin-top: 3px;
+            cursor: pointer;
+            accent-color: #667eea;
+            flex-shrink: 0;
+        }
+
+        .option.correct {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+        }
+
+        .option.incorrect {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+
+        .fill-input {
+            font-size: 1.1em;
+            padding: 14px 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            margin-bottom: 25px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .fill-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .fill-input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .feedback-section {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 10px;
+            display: none;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        .feedback-section.show {
+            display: block;
+        }
+
+        .feedback-correct {
+            background: #e8f5e9;
+            border-left: 6px solid #4CAF50;
+        }
+
+        .feedback-incorrect {
+            background: #ffebee;
+            border-left: 6px solid #f44336;
+        }
+
+        .feedback-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-correct .feedback-title {
+            color: #2e7d32;
+        }
+
+        .feedback-incorrect .feedback-title {
+            color: #c62828;
+        }
+
+        .feedback-text {
+            font-size: 1.1em;
+            line-height: 1.7;
+            color: #333;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+
+        .explanation-text {
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .deeper-learning {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .deeper-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .deeper-text {
+            color: #555;
+            font-size: 0.95em;
+            line-height: 1.7;
+            font-style: italic;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 14px 35px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05em;
+        }
+
+        .nav-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .completion {
+            text-align: center;
+            padding: 60px 50px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: zoomIn 0.5s ease-out;
+            max-width: 800px;
+        }
+
+        .completion-icon {
+            font-size: 6em;
+            margin-bottom: 20px;
+        }
+
+        .completion h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 2.8em;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            margin: 30px 0;
+            font-size: 1.4em;
+        }
+
+        .score-percentage {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .score-feedback {
+            font-size: 1.3em;
+            margin-top: 15px;
+            opacity: 0.9;
+        }
+
+        .completion p {
+            color: #666;
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05em;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            h1 { font-size: 2.2em; }
+            .quiz-card { padding: 30px; }
+            .header-stats { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 Advanced Science Quiz</h1>
+            <p class="subtitle">Grade 7+ — Critical Thinking Edition</p>
+            <span class="difficulty-badge">⭐ INTERMEDIATE LEVEL (Beyond Syllabus)</span>
+            <div class="header-stats">
+                <div class="stat-box">
+                    <div class="stat-label">Question</div>
+                    <div class="stat-value"><span id="currentQuestion">1</span>/50</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value"><span id="currentScore">0</span></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Percentage</div>
+                    <div class="stat-value"><span id="percentage">0</span>%</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </header>
+
+        <div id="quizContainer"></div>
+
+        <div class="controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousQuestion()">← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextQuestion()" style="display:none;">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            // UNIT 1: Advanced Measurement
+            { unit: "Unit 1", number: 1, difficulty: "Intermediate", type: "MC", question: "A student measures the same object five times with a ruler and gets: 10.2 cm, 10.3 cm, 10.1 cm, 10.2 cm, 10.4 cm. What is the most likely actual length?", options: ["10.1 cm (lowest value)", "10.24 cm (average)", "10.2 cm (mode)", "Cannot be determined"], correct: 1, explanation: "Taking the average accounts for measurement error and gives the best estimate of the true value.", deeper: "In science, we use mean (average) to reduce random error. The average is 10.24 cm. This demonstrates why scientists take multiple measurements—each measurement has uncertainty, and averaging minimizes this. In advanced labs, you'd calculate standard deviation to understand the precision!" },
+
+            { unit: "Unit 1", number: 2, difficulty: "Intermediate", type: "MC", question: "Why might a measurement made with a very sensitive scale give a result like 5.000 kg for an object that actually weighs slightly different?", options: ["Scales are always perfect", "Systematic error in the scale's calibration", "Random error only", "The object changes weight"], correct: 1, explanation: "Systematic error means the scale consistently measures wrong in one direction—all readings are off by the same amount.", deeper: "There's a difference between precision (how many decimal places) and accuracy (how close to the true value). A scale might be very precise (showing 5.000 kg) but inaccurate if it's not calibrated correctly. This is crucial in real-world measurements!" },
+
+            { unit: "Unit 1", number: 3, difficulty: "Intermediate", type: "FIB", question: "The ratio of an object's actual size to its measured size is called _______.", answer: "scale factor", explanation: "Scale factor shows how a measurement relates to the actual object (e.g., 1:100 means 1 unit on paper = 100 units in reality.", deeper: "Scale factors are used everywhere—maps, blueprints, models. Understanding scale helps interpret real-world data." },
+
+            { unit: "Unit 1", number: 4, difficulty: "Intermediate", type: "MC", question: "If you measure a liquid's volume using a measuring cylinder graduated to 0.1 mL, what is your measurement's uncertainty?", options: ["± 0.1 mL", "± 0.05 mL", "± 0.01 mL", "Zero (exact)"], correct: 1, explanation: "Uncertainty is half the smallest division. A 0.1 mL division means you can be confident to ±0.05 mL.", deeper: "All measurements have uncertainty limits. Knowing your instrument's precision helps you understand your data's reliability. This is essential for error analysis!" },
+
+            { unit: "Unit 1", number: 5, difficulty: "Intermediate", type: "MC", question: "A student calculates an object's density as 2.5 g/cm³ but the actual density is 2.4 g/cm³. This is an example of:", options: ["Random error", "Systematic error", "Measurement accuracy", "Correct measurement"], correct: 1, explanation: "A consistent difference between measured and actual value is systematic error, likely from equipment calibration.", deeper: "Systematic errors can be identified and corrected by using calibrated equipment or adjusting calculations. Random errors are unpredictable." },
+
+            { unit: "Unit 1", number: 6, difficulty: "Intermediate", type: "MC", question: "Why is it important to measure from the zero mark of a ruler rather than the edge?", options: ["It's just a habit", "The edge might be worn or damaged", "It makes the measurement seem bigger", "No real difference"], correct: 1, explanation: "Ruler edges can be worn down, making measurements inaccurate. The zero mark is the official reference point.", deeper: "This is why zero-error corrections are taught in advanced labs. Many instruments have systematic errors if you don't account for the starting point." },
+
+            { unit: "Unit 1", number: 7, difficulty: "Intermediate", type: "MC", question: "If density = mass/volume, and you double only the mass while keeping volume constant, how does density change?", options: ["Doubles", "Halves", "Stays the same", "Becomes zero"], correct: 0, explanation: "Since density is directly proportional to mass, doubling mass doubles density.", deeper: "This shows proportional relationships in science. Understanding how variables affect each other is fundamental to physics and chemistry." },
+
+            { unit: "Unit 1", number: 8, difficulty: "Intermediate", type: "MC", question: "A rectangular block has dimensions 5.0 cm × 3.0 cm × 2.0 cm. Given these measurements, what is the MINIMUM precision the volume calculation can claim?", options: ["3 significant figures", "2 significant figures", "1 significant figure", "4 significant figures"], correct: 1, explanation: "The measurement with fewest significant figures (2.0 cm = 2 sig figs) limits the answer. Volume = 30 cm³ (not 30.0).", deeper: "Significant figures in calculations depend on your measurements. This is crucial in chemistry and physics—it prevents false precision." },
+
+            { unit: "Unit 1", number: 9, difficulty: "Intermediate", type: "MC", question: "Why is taking multiple measurements and finding the average better than trusting a single measurement?", options: ["It saves time", "It reduces the effect of random errors", "It increases the measurement", "It makes calculations easier"], correct: 1, explanation: "Random errors scatter above and below the true value. Averaging cancels out these random variations.", deeper: "In professional science, we use statistical analysis to find the best estimate and calculate confidence intervals. This gives us power over uncertainty!" },
+
+            // UNIT 2: Advanced Cells
+            { unit: "Unit 2", number: 10, difficulty: "Intermediate", type: "MC", question: "Why do cells with high metabolic rates (like liver cells) have more mitochondria than muscle resting cells?", scenario: "Scenario: A liver cell processes toxins and performs energy-intensive work all day.", options: ["They're just larger cells", "They need more ATP energy constantly", "Mitochondria prevent damage", "It's random variation"], correct: 1, explanation: "High-energy cells require abundant ATP. More mitochondria = more energy production.", deeper: "This shows structure-function relationships in biology. Cells are optimized for their specific jobs. Heart cells also have many mitochondria—why?" },
+
+            { unit: "Unit 2", number: 11, difficulty: "Intermediate", type: "MC", question: "If you place a cell in pure distilled water, water enters and the cell swells. What happens in a plant cell?", options: ["It bursts like an animal cell", "The cell wall prevents bursting; it becomes turgid", "Nothing—plant cells have no water", "The nucleus moves out"], correct: 1, explanation: "Plant cell walls are rigid and prevent bursting. Water pressure (turgor) keeps them rigid and firm.", deeper: "This is why plant leaves droop when under-watered—they lose turgor. The cell wall is a protective structure absent in animal cells." },
+
+            { unit: "Unit 2", number: 12, difficulty: "Intermediate", type: "FIB", question: "The _______ is a network of protein tubes in the cytoplasm that provides cell structure and aids movement.", answer: "cytoskeleton", explanation: "The cytoskeleton is like the cell's internal skeleton—dynamic and constantly rebuilding.", deeper: "Recent discoveries show the cytoskeleton is far more complex than initially thought. It's involved in cell signaling and organization!" },
+
+            { unit: "Unit 2", number: 13, difficulty: "Intermediate", type: "MC", question: "Why do red blood cells (which have no nucleus or mitochondria) only survive about 120 days?", options: ["They get tired", "They can't repair themselves without nucleus and mitochondria", "It's genetic programming", "They move too fast"], correct: 1, explanation: "Without a nucleus, they can't make new proteins. Without mitochondria, they can't produce ATP for repairs. They gradually deteriorate.", deeper: "Your body replaces about 2 million red blood cells per second! This is why bone marrow is crucial—it constantly produces new blood cells." },
+
+            { unit: "Unit 2", number: 14, difficulty: "Intermediate", type: "MC", question: "Cyanide is poisonous because it blocks mitochondrial function. Why is this immediately fatal?", options: ["It makes the cell blue", "Cells cannot produce ATP and die, especially affecting heart and brain", "It destroys the cell wall", "It increases photosynthesis"], correct: 1, explanation: "Without ATP, cells cannot function. Heart and brain cells die first due to high energy demands.", deeper: "This shows why mitochondria are essential. Cancer cells also have altered mitochondrial function, which is being researched for new treatments." },
+
+            { unit: "Unit 2", number: 15, difficulty: "Intermediate", type: "MC", question: "Why can a bacterial cell (prokaryote) survive and thrive without compartments like a plant cell?", options: ["Bacteria are simpler but equally efficient", "They're actually less efficient", "They don't need membrane-bound organelles due to small size and high surface area-to-volume ratio", "Bacteria do have organelles"], correct: 2, explanation: "Small size means efficient diffusion of materials. No need for compartments when distances are microscopic.", deeper: "This is an evolutionary advantage of simplicity! However, eukaryotic compartments allow for specialization and greater complexity." },
+
+            { unit: "Unit 2", number: 16, difficulty: "Intermediate", type: "MC", question: "A cell's nucleus contains DNA. Where else in a eukaryotic cell is DNA found?", options: ["Only in the nucleus", "In mitochondria and chloroplasts", "In the cell membrane", "In the cytoplasm but not nucleus"], correct: 1, explanation: "Mitochondria and chloroplasts have their own DNA (evidence they were once independent organisms—endosymbiotic theory).", deeper: "The endosymbiotic theory explains how eukaryotes evolved. Mitochondrial and chloroplast DNA are remarkably similar to bacterial DNA!" },
+
+            { unit: "Unit 2", number: 17, difficulty: "Intermediate", type: "MC", question: "Why do secretory cells (like pancreas cells making insulin) have abundant rough endoplasmic reticulum and Golgi apparatus?", options: ["They like to be organized", "They produce, modify, and package large amounts of protein for export", "It's random cell design", "To store extra energy"], correct: 1, explanation: "Rough ER makes proteins, Golgi modifies and packages them. Cells specialized for secretion need these in abundance.", deeper: "Pancreatic beta cells produce insulin this way. Understanding this helped scientists develop insulin treatments!" },
+
+            { unit: "Unit 2", number: 18, difficulty: "Intermediate", type: "MC", question: "If you observe a cell under a microscope and see it has a cell wall but no chloroplasts, could it be from a fungus rather than a plant?", options: ["No, it must be a plant", "Yes, fungal cells also have walls but no chloroplasts", "Maybe, but need more evidence", "Definitely not—fungi have no walls"], correct: 1, explanation: "Fungi have cell walls (made of chitin, not cellulose) but no chloroplasts. They're neither plants nor animals.", deeper: "The three-kingdom classification (bacteria, archaea, eukarya) or five-kingdom system recognizes fungi as distinct. Kingdom: Fungi!" },
+
+            // UNIT 3: Advanced Matter
+            { unit: "Unit 3", number: 19, difficulty: "Intermediate", type: "MC", question: "Explain why water is less dense as ice than as liquid water (ice floats).", scenario: "Scenario: You drop ice in your drink and it floats.", options: ["Ice is heavier", "Hydrogen bonding in ice creates a lattice with more space between molecules", "Cold temperatures make things lighter", "Ice has no mass"], correct: 1, explanation: "Ice's crystalline structure has spaces. Liquid water is denser because molecules pack more tightly.", deeper: "This unique property allows aquatic life to survive under ice in winter. If ice sank, lakes would freeze from the bottom up—catastrophic!" },
+
+            { unit: "Unit 3", number: 20, difficulty: "Intermediate", type: "MC", question: "At 1°C, water exists as both ice and liquid. Why is this temperature called the 'freezing point'?", options: ["It's just arbitrary", "It's where solid and liquid phases are in equilibrium", "Water disappears at this point", "Above this, water only exists as liquid"], correct: 1, explanation: "At 0°C, both phases coexist in equilibrium. Heat added melts ice; heat removed freezes water.", deeper: "This is a phase equilibrium. Pressure changes the freezing point slightly—this explains why skates can melt ice under their blades!" },
+
+            { unit: "Unit 3", number: 21, difficulty: "Intermediate", type: "FIB", question: "When a substance changes state, its _______ remains constant but its _______ changes.", answer: "molecular identity, physical properties", explanation: "Water is still H₂O whether ice, liquid, or steam—the molecules haven't changed.", deeper: "This distinguishes physical changes from chemical changes. Understanding this is key to chemistry!" },
+
+            { unit: "Unit 3", number: 22, difficulty: "Intermediate", type: "MC", question: "Why do puddles evaporate even on cool days when the water isn't boiling?", options: ["The water is still boiling invisibly", "Surface molecules have enough kinetic energy to escape as gas", "Sunlight vaporizes all water", "Evaporation only happens at 100°C"], correct: 1, explanation: "In any liquid, some molecules have enough energy to escape—this is evaporation (different from boiling).", deeper: "Evaporation and boiling are both vaporization, but boiling involves bubble formation throughout the liquid. Both depend on temperature and surface area." },
+
+            { unit: "Unit 3", number: 23, difficulty: "Intermediate", type: "MC", question: "If you heat a gas in a rigid container, what happens to its pressure?", options: ["Stays the same", "Decreases", "Increases (pressure is proportional to temperature)", "Becomes zero"], correct: 2, explanation: "In a rigid container, volume is constant. Gas law: P ∝ T. Higher temperature = higher pressure.", deeper: "This is Gay-Lussac's Law. It's why tire pressure increases in summer—a real-world example!" },
+
+            { unit: "Unit 3", number: 24, difficulty: "Intermediate", type: "MC", question: "Sublimation is a phase change where a solid becomes a gas without becoming a liquid. Which substance commonly does this?", options: ["Water", "Dry ice (solid CO₂)", "Iron", "Table salt"], correct: 1, explanation: "Dry ice sublimates directly to CO₂ gas. This is used in special effects and for keeping things frozen.", deeper: "Not all substances sublime easily at normal conditions. Some require low pressure. Reverse sublimation is called deposition (frost forms this way!)." },
+
+            { unit: "Unit 3", number: 25, difficulty: "Intermediate", type: "MC", question: "Why does humidity make hot days feel more uncomfortable than dry heat?", options: ["Humidity adds heat", "Evaporative cooling (sweat evaporation) is blocked by water vapor in the air", "Humidity changes temperature", "No real effect"], correct: 1, explanation: "Your body cools by sweating. High humidity slows evaporation, preventing cooling. In dry climates, sweat evaporates rapidly.", deeper: "This is why high-humidity areas are more dangerous. Heat index combines temperature and humidity to show 'feels like' temperature." },
+
+            { unit: "Unit 3", number: 26, difficulty: "Intermediate", type: "MC", question: "At the molecular level, why is a solid rigid and incompressible while a gas is easily compressed?", options: ["Solids are heavier", "Solid particles are tightly packed with strong forces between them; gas particles are far apart with weak forces", "Gases are weaker", "Compression always works the same"], correct: 1, explanation: "Solid particles are touching and strongly bonded. Gas particles are separated; compressing just pushes them closer.", deeper: "This particle model explains all states of matter. Liquids are intermediate—particles touch but can slide past each other." },
+
+            // UNIT 4: Advanced Elements & Compounds
+            { unit: "Unit 4", number: 27, difficulty: "Intermediate", type: "MC", question: "Why are noble gases (like helium, neon) unreactive, while other elements are highly reactive?", options: ["They're too heavy", "Their electron shells are full, so they don't need to gain or lose electrons", "They have no neutrons", "They're too hot"], correct: 1, explanation: "Full outer electron shells = stability. Noble gases already have what they need, so they don't react.", deeper: "This explains the whole periodic table's reactivity trends! Elements react to achieve a full outer shell (8 electrons). It's called octet rule." },
+
+            { unit: "Unit 4", number: 28, difficulty: "Intermediate", type: "MC", question: "If an atom of sodium (Na) loses one electron, what charge does the resulting ion have?", options: ["Neutral (0)", "+1 (positive)", "-1 (negative)", "+2 (positive)"], correct: 1, explanation: "Losing an electron = losing negative charge = positive ion. Na⁺ is written for sodium ion.", deeper: "Ions are electrically charged atoms. Cations (+) lose electrons; anions (-) gain electrons. Ionic compounds are held by these opposite charges." },
+
+            { unit: "Unit 4", number: 29, difficulty: "Intermediate", type: "FIB", question: "A _______ bond is formed when atoms share electrons, holding molecules together.", answer: "covalent", explanation: "Covalent bonds are electron-sharing bonds. They're very strong and hold molecules like water (H₂O) together.", deeper: "Covalent bonds can be polar (unequal sharing) or nonpolar (equal sharing). This affects molecule properties." },
+
+            { unit: "Unit 4", number: 30, difficulty: "Intermediate", type: "MC", question: "Why is a water molecule polar, while a carbon dioxide molecule is nonpolar?", options: ["Water is heavier", "Water's electrons are pulled unequally toward oxygen (bent molecule shape); CO₂ is symmetrical", "CO₂ is polar", "Polarity is random"], correct: 1, explanation: "Water is bent-shaped with unequal electron distribution. CO₂ is linear/symmetrical—electrons balance out.", deeper: "Molecular shape determines polarity. Polarity explains why water dissolves polar compounds but not nonpolar ones. 'Like dissolves like!'" },
+
+            { unit: "Unit 4", number: 31, difficulty: "Intermediate", type: "MC", question: "Why can sodium and chlorine explosively form sodium chloride (table salt), yet the resulting salt is very stable?", options: ["Reaction releases energy and creates ionic bonds", "They're forced to react", "It's just luck", "Both are unstable"], correct: 0, explanation: "The reaction is exothermic (releases energy). Ionic bonds in the product are very strong and stable.", deeper: "Ionic compounds form because they're lower in energy than separate atoms. Energy released is why reactions can be violent!" },
+
+            { unit: "Unit 4", number: 32, difficulty: "Intermediate", type: "MC", question: "What is an alloy, and why are alloys (like brass) often stronger than pure metals (like copper)?", options: ["Alloy is impure metal", "Alloy is a mixture of metals; the different-sized atoms disrupt crystal structure, making it harder", "Alloys are always weaker", "No difference in strength"], correct: 1, explanation: "In pure copper, crystals can slip. Other metal atoms in brass lock them in place, increasing strength.", deeper: "Bronze (copper+tin), steel (iron+carbon), brass (copper+zinc) are all alloys. Alloying is how we customize metal properties!" },
+
+            { unit: "Unit 4", number: 33, difficulty: "Intermediate", type: "MC", question: "Why is oxygen (O₂) a gas at room temperature, while sulfur (S₈) is a solid?", options: ["Oxygen is lighter", "Intermolecular forces between O₂ molecules are weak; S₈ has strong intermolecular forces", "Oxygen has no mass", "Random property"], correct: 1, explanation: "State depends on intermolecular forces. Weak forces = gas; strong forces = solid at same temperature.", deeper: "Elements in the same group have similar properties but differences in intermolecular forces determine their states." },
+
+            { unit: "Unit 4", number: 34, difficulty: "Intermediate", type: "MC", question: "In a chemical formula like Ca(OH)₂, what do the parentheses and subscript tell you?", options: ["Just decorative", "There are 2 calcium atoms", "There are 2 hydroxide groups (OH), each with 1 calcium, oxygen, and hydrogen", "Unclear"], correct: 2, explanation: "Parentheses group atoms. The subscript 2 means 2 of that group. Ca(OH)₂ = 1 Ca + 2 O + 2 H.", deeper: "Chemical formulas are like codes. Learning to read them unlocks understanding of compounds and their composition." },
+
+            // UNIT 5: Advanced Solar System & Energy
+            { unit: "Unit 5", number: 35, difficulty: "Intermediate", type: "MC", question: "Why does Earth's orbit take 365 days while Venus's orbit takes only 225 days, despite Venus being closer to the Sun?", scenario: "Scenario: Two planets orbit at different distances from the Sun.", options: ["Venus moves faster", "Venus is smaller", "Closer orbits are faster—shorter distance covers in less time", "Venus is heavier"], correct: 2, explanation: "Kepler's Third Law: Planets closer to the Sun orbit faster. Venus's smaller orbit means faster travel.", deeper: "This is Kepler's Laws of planetary motion—fundamental to understanding orbits. The math shows orbital period increases with distance!" },
+
+            { unit: "Unit 5", number: 36, difficulty: "Intermediate", type: "FIB", question: "The _______ is the imaginary boundary around the Sun's gravitational influence where objects become part of the solar system.", answer: "solar system boundary / heliosphere", explanation: "The Sun's gravity extends incredibly far, defining the solar system's edge.", deeper: "Beyond this lies the Oort Cloud with comets. Some scientists debate where the true edge is!" },
+
+            { unit: "Unit 5", number: 37, difficulty: "Intermediate", type: "MC", question: "Why are some planets called 'terrestrial' and others 'jovian,' and why does this matter?", options: ["Just names", "Terrestrial = rocky, close to Sun, small; Jovian = gas giants, far from Sun, huge. Different origins and compositions", "No real difference", "Random labels"], correct: 1, explanation: "Terrestrial planets likely formed from dust; Jovian planets from condensed gas. Different formation theories apply.", deeper: "Understanding why planets formed differently helps us understand our solar system's history and exoplanet searches!" },
+
+            { unit: "Unit 5", number: 38, difficulty: "Intermediate", type: "MC", question: "If gravitational potential energy = mgh, and you lift an object higher, its potential energy increases. But the Sun's gravity extends forever—how do we calculate escape velocity?", options: ["Use simple PE formula", "Use infinite sum calculus-based formulas", "Gravity has a limit", "Impossible to calculate"], correct: 1, explanation: "Escape velocity requires advanced math (requires knowing work done against gravity over infinite distance). It's about 11.2 km/s from Earth.", deeper: "Escape velocity explains why rockets need such power. It also explains black holes—escape velocity exceeds light speed!" },
+
+            { unit: "Unit 5", number: 39, difficulty: "Intermediate", type: "MC", question: "Why is the Sun's core extremely hot (15 million°C) while the surface is cooler (5500°C)?", options: ["Core is closer to something hot", "Nuclear fusion releases tremendous energy in the core", "Just random variation", "The opposite is true"], correct: 1, explanation: "Hydrogen fusion in the core releases enormous energy. This heat powers the Sun and pushes outward.", deeper: "The Sun is essentially a giant hydrogen bomb. Understanding fusion helps us develop clean energy!" },
+
+            { unit: "Unit 5", number: 40, difficulty: "Intermediate", type: "FIB", question: "The process where one form of energy transforms into another is called _______.", answer: "energy conversion", explanation: "Examples: chemical energy → kinetic energy (burning fuel → car moves).", deeper: "All energy conversions lose some energy as heat (Second Law of Thermodynamics). Efficiency = useful energy output / total energy input." },
+
+            { unit: "Unit 5", number: 41, difficulty: "Intermediate", type: "MC", question: "A battery stores chemical energy. When you connect a light bulb, what's the sequence of energy transformations?", options: ["Chemical → heat only", "Chemical → electrical → light + heat", "Electrical → chemical", "No transformation"], correct: 1, explanation: "Battery's chemical energy drives electrons (electrical energy) through the bulb, producing light and heat.", deeper: "LED bulbs are more efficient (less heat). Understanding energy conversions helps design better technology!" },
+
+            // UNIT 6: Advanced Ecosystem
+            { unit: "Unit 6", number: 42, difficulty: "Intermediate", type: "MC", question: "In a food chain, only about 10% of energy transfers from one level to the next. Where does the other 90% go?", scenario: "Scenario: Plants capture sunlight. Herbivores eat plants. Carnivores eat herbivores.", options: ["Disappears", "Lost as heat, used for body functions, and stored in biomass that's not eaten", "Returned to the Sun", "Multiplies"], correct: 1, explanation: "Energy is lost through respiration (heat), growth, reproduction, and waste. Only consumed biomass transfers.", deeper: "This is the 10% rule. It explains why we can support fewer carnivores than herbivores—there's less energy available higher up!" },
+
+            { unit: "Unit 6", number: 43, difficulty: "Intermediate", type: "MC", question: "Why does removing one species from a food web often cause a chain reaction of changes?", options: ["All species are independent", "Food webs are interconnected; each species has multiple roles and relationships", "Ecosystems never change", "Only that species is affected"], correct: 1, explanation: "Food webs have interdependencies. Removing one species cascades through the system.", deeper: "This is why conservation matters. Even 'insignificant' species play roles. Remove bees → no pollination → plants fail → herbivores starve." },
+
+            { unit: "Unit 6", number: 44, difficulty: "Intermediate", type: "FIB", question: "A predator-prey relationship where both organisms are affected is an example of _______.", answer: "interaction / symbiosis", explanation: "Predator benefits (food), prey is harmed. It's a form of biological interaction.", deeper: "There are also mutualism (both benefit) and parasitism (one benefits, one harmed). These shape ecosystems!" },
+
+            { unit: "Unit 6", number: 45, difficulty: "Intermediate", type: "MC", question: "Why is biodiversity important for ecosystem resilience to climate change?", options: ["More species = prettier", "Genetic variation and functional diversity mean some species survive changes better", "Biodiversity is irrelevant", "All species are equally important"], correct: 1, explanation: "Diverse ecosystems can adapt. If some species thrive in new conditions, the ecosystem stabilizes.", deeper: "Monocultures (single crop/species) are vulnerable. This is why rainforests are so important—their diversity is irreplaceable!" },
+
+            { unit: "Unit 6", number: 46, difficulty: "Intermediate", type: "MC", question: "How does the carbon cycle connect photosynthesis, respiration, and decomposition?", options: ["They're separate processes", "Plants absorb CO₂ (photosynthesis) → animals eat plants and release CO₂ (respiration) → decomposers release more CO₂ from dead matter", "Only plants involve carbon", "Carbon doesn't cycle"], correct: 1, explanation: "Carbon continuously cycles between atmosphere, living things, and soil through these processes.", deeper: "Understanding carbon cycle is KEY to climate change. Excess CO₂ from burning fossil fuels disrupts this balance!" },
+
+            { unit: "Unit 6", number: 47, difficulty: "Intermediate", type: "MC", question: "Why do invasive species often outcompete native species?", options: ["They're always stronger", "Lack of natural predators + adapting to new environment + competitive advantage", "They're smarter", "Random luck"], correct: 1, explanation: "Invasive species arrive without their natural enemies and often have traits that allow them to thrive in new habitats.", deeper: "Zebra mussels clogging pipes, pythons in the Everglades—invasive species cost billions. Prevention is crucial!" },
+
+            { unit: "Unit 6", number: 48, difficulty: "Intermediate", type: "MC", question: "How might ocean acidification (from increased CO₂) affect marine food webs?", options: ["No effect", "Acidification damages shells of organisms → affects herbivores → cascades through food web", "Only plants affected", "Makes water taste different"], correct: 1, explanation: "Pteropods and other shelled organisms struggle in acidic water. They're food for fish and whales. Disrupted base = disrupted whole web.", deeper: "Ocean acidification is called the 'other CO₂ problem.' It's happening NOW and we see effects already!" },
+
+            { unit: "Unit 6", number: 49, difficulty: "Intermediate", type: "FIB", question: "A _______ is a cyclic pattern of change in an ecosystem, like succession after a forest fire.", answer: "succession", explanation: "Ecological succession shows how ecosystems recover and change over time.", deeper: "Primary succession starts from bare rock. Secondary succession begins with soil already present. Both take decades to centuries!" },
+
+            { unit: "Unit 6", number: 50, difficulty: "Intermediate", type: "MC", question: "Why are wetlands considered critical ecosystems despite being 'swampy' and seeming less valuable than forests?", options: ["They're not important", "Wetlands filter water, prevent flooding, provide habitat for 40% of species, and store carbon", "Wetlands cause disease only", "Better to drain them"], correct: 1, explanation: "Wetlands are nature's kidneys. They filter runoff, reduce flooding, sequester carbon, and support biodiversity.", deeper: "We've lost 87% of global wetlands. This is devastating for climate and biodiversity. Protecting remaining wetlands is crucial!" }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = new Array(50).fill(false);
+
+        function renderQuestion() {
+            const quiz = quizData[currentQuestion];
+            const quizContainer = document.getElementById('quizContainer');
+            let questionHTML = `
+                <div class="quiz-card">
+                    <div class="quiz-header">
+                        <span class="unit-badge">${quiz.unit}</span>
+                        <span class="question-type">${quiz.type}</span>
+                        <span class="difficulty-level">⭐ ${quiz.difficulty}</span>
+                    </div>
+                    <div class="question-number">Q${quiz.number}</div>
+            `;
+
+            if (quiz.scenario) {
+                questionHTML += `<div class="scenario-box">📌 ${quiz.scenario}</div>`;
+            }
+
+            questionHTML += `<div class="question-text">${quiz.question}</div>`;
+
+            if (quiz.type === "MC") {
+                questionHTML += '<div class="options">';
+                quiz.options.forEach((option, idx) => {
+                    questionHTML += `
+                        <label class="option">
+                            <input type="radio" name="answer" value="${idx}">
+                            <span>${option}</span>
+                        </label>
+                    `;
+                });
+                questionHTML += '</div>';
+            } else if (quiz.type === "FIB") {
+                questionHTML += `
+                    <input type="text" class="fill-input" placeholder="Type your answer here...">
+                `;
+            }
+
+            questionHTML += `
+                <button class="submit-btn" onclick="submitAnswer()">Submit Answer</button>
+                <div class="feedback-section" id="feedback"></div>
+            </div>
+            `;
+
+            quizContainer.innerHTML = questionHTML;
+            updateProgress();
+            updateButtons();
+        }
+
+        function submitAnswer() {
+            const quiz = quizData[currentQuestion];
+            const feedbackDiv = document.getElementById('feedback');
+            let isCorrect = false;
+            let userAnswer = '';
+
+            if (quiz.type === "MC") {
+                const selected = document.querySelector('input[name="answer"]:checked');
+                if (!selected) {
+                    alert('Please select an option!');
+                    return;
+                }
+                userAnswer = parseInt(selected.value);
+                isCorrect = userAnswer === quiz.correct;
+                
+                document.querySelectorAll('.option').forEach((opt, idx) => {
+                    if (idx === quiz.correct) {
+                        opt.classList.add('correct');
+                    } else if (idx === userAnswer && !isCorrect) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                document.querySelector('.submit-btn').disabled = true;
+            } else if (quiz.type === "FIB") {
+                const input = document.querySelector('.fill-input');
+                userAnswer = input.value.toLowerCase().trim();
+                isCorrect = userAnswer === quiz.answer.toLowerCase().trim();
+                input.disabled = true;
+                document.querySelector('.submit-btn').disabled = true;
+            }
+
+            if (isCorrect) {
+                score++;
+                feedbackDiv.classList.add('feedback-correct', 'show');
+                feedbackDiv.innerHTML = `
+                    <div class="feedback-title">✅ Correct!</div>
+                    <div class="feedback-text">
+                        <div class="explanation">
+                            <div class="explanation-title">Why:</div>
+                            <div class="explanation-text">${quiz.explanation}</div>
+                        </div>
+                        <div class="deeper-learning">
+                            <div class="deeper-title">🚀 Think Deeper:</div>
+                            <div class="deeper-text">${quiz.deeper}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                feedbackDiv.classList.add('feedback-incorrect', 'show');
+                let correctAnswerText = quiz.correct;
+                if (quiz.type === "MC") {
+                    correctAnswerText = quiz.options[quiz.correct];
+                } else {
+                    correctAnswerText = quiz.answer;
+                }
+                feedbackDiv.innerHTML = `
+                    <div class="feedback-title">❌ Incorrect</div>
+                    <div class="feedback-text">
+                        <strong>Correct answer: ${correctAnswerText}</strong>
+                        <div class="explanation">
+                            <div class="explanation-title">Why:</div>
+                            <div class="explanation-text">${quiz.explanation}</div>
+                        </div>
+                        <div class="deeper-learning">
+                            <div class="deeper-title">🚀 Learn More:</div>
+                            <div class="deeper-text">${quiz.deeper}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            answered[currentQuestion] = true;
+            updateScore();
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function updateScore() {
+            document.getElementById('currentScore').textContent = score;
+            const percentage = Math.round((score / (currentQuestion + 1)) * 100);
+            document.getElementById('percentage').textContent = percentage;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            } else {
+                showCompletion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / 50) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentQuestion').textContent = currentQuestion + 1;
+        }
+
+        function updateButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+        }
+
+        function showCompletion() {
+            const percentage = Math.round((score / 50) * 100);
+            let feedback = '';
+            if (percentage >= 90) feedback = '🌟 EXCEPTIONAL! You think like a true scientist!';
+            else if (percentage >= 80) feedback = '🎓 EXCELLENT! Advanced understanding confirmed!';
+            else if (percentage >= 70) feedback = '📚 GREAT! You\'re developing critical thinking skills!';
+            else if (percentage >= 60) feedback = '💡 GOOD START! Keep exploring beyond the basics!';
+            else feedback = '🔬 KEEP LEARNING! Science requires curiosity and persistence!';
+
+            document.getElementById('quizContainer').innerHTML = `
+                <div class="completion">
+                    <div class="completion-icon">🏆</div>
+                    <h2>Advanced Quiz Complete!</h2>
+                    <div class="score-display">
+                        <div>Final Score</div>
+                        <div class="score-percentage">${score}/50</div>
+                        <div>${percentage}%</div>
+                        <div class="score-feedback">${feedback}</div>
+                    </div>
+                    <p>You've challenged yourself with intermediate-level questions that require critical thinking!</p>
+                    <p style="color: #667eea; font-weight: 600; margin-top: 20px;">💭 Remember: The goal isn't just correct answers—it's understanding WHY. Review the "Think Deeper" sections!</p>
+                    <button class="nav-btn" onclick="location.reload()" style="margin-top: 20px; width: auto;">Try Again</button>
+                </div>
+            `;
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        renderQuestion();
+    </script>
+</body>
+</html>

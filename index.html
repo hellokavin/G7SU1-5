@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Science Quiz Portal - Grade 7</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            opacity: 0.85;
+            font-style: italic;
+        }
+
+        .quizzes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
+            text-decoration: none;
+            color: #333;
+            animation: fadeInUp 0.6s ease-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+        }
+
+        .quiz-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .quiz-description {
+            font-size: 1.05em;
+            line-height: 1.8;
+            color: #666;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .quiz-features {
+            background: #f5f7fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        .feature {
+            margin: 8px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-icon {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .quiz-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .quiz-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .beginner {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .intermediate {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .advanced {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+
+        .info-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 12px;
+            color: white;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .info-section h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .info-section p {
+            font-size: 1.1em;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            border-radius: 12px;
+            color: white;
+            margin-top: 30px;
+        }
+
+        .instructions h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            font-size: 1.05em;
+            line-height: 2;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2em;
+            }
+
+            .quizzes-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .quiz-card {
+                padding: 30px 20px;
+            }
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            opacity: 0.8;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 Science Quiz Portal</h1>
+            <p class="subtitle">Grade 7 — Units 1-6</p>
+            <p class="tagline">Choose Your Challenge Level & Master Science!</p>
+        </header>
+
+        <div class="quizzes-grid">
+            <!-- Quiz 1: Original Beautiful Version -->
+            <a href="science_quiz.html" class="quiz-card" style="text-decoration: none; color: inherit;">
+                <div class="quiz-icon">✨</div>
+                <span class="difficulty-badge beginner">Beginner Level</span>
+                <div class="quiz-title">Original Quiz</div>
+                <div class="quiz-description">
+                    Beautiful interactive quiz with one-by-one clickable answers and instant reveals. Perfect for getting comfortable with the concepts!
+                </div>
+                <div class="quiz-features">
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>20 questions</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>Instant answer reveals</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>Explanations included</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>All question types</span>
+                    </div>
+                </div>
+                <button class="quiz-button">Start Quiz →</button>
+            </a>
+
+            <!-- Quiz 2: 50 Questions with Scoring -->
+            <a href="science_quiz_v2.html" class="quiz-card" style="text-decoration: none; color: inherit;">
+                <div class="quiz-icon">🎓</div>
+                <span class="difficulty-badge intermediate">Intermediate Level</span>
+                <div class="quiz-title">Standard Quiz v2</div>
+                <div class="quiz-description">
+                    Fresh 50 questions with instant feedback and detailed explanations. Great for comprehensive learning with immediate results!
+                </div>
+                <div class="quiz-features">
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>50 questions</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>Live scoring system</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>Instant feedback</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>Progress tracking</span>
+                    </div>
+                </div>
+                <button class="quiz-button">Start Quiz →</button>
+            </a>
+
+            <!-- Quiz 3: Advanced Critical Thinking -->
+            <a href="advanced_critical_thinking_quiz.html" class="quiz-card" style="text-decoration: none; color: inherit;">
+                <div class="quiz-icon">🏆</div>
+                <span class="difficulty-badge advanced">Advanced Level</span>
+                <div class="quiz-title">Critical Thinking Edition</div>
+                <div class="quiz-description">
+                    50 advanced questions that push beyond the syllabus! Includes "Think Deeper" sections for developing true scientific reasoning.
+                </div>
+                <div class="quiz-features">
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>50 challenging questions</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>Real-world applications</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>Advanced explanations</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">✓</span>
+                        <span>"Think Deeper" sections</span>
+                    </div>
+                </div>
+                <button class="quiz-button">Start Quiz →</button>
+            </a>
+        </div>
+
+        <div class="info-section">
+            <h2>📱 Works on All Devices!</h2>
+            <p>Take these quizzes on your computer, tablet, or mobile phone. No apps needed—just open in your browser!</p>
+        </div>
+
+        <div class="instructions">
+            <h3>🎯 How to Use This Portal:</h3>
+            <ol>
+                <li><strong>Choose Your Level:</strong> Select a quiz based on your learning level</li>
+                <li><strong>Start Taking Quiz:</strong> Click "Start Quiz" button on any card</li>
+                <li><strong>Answer Questions:</strong> Read carefully and select or type your answer</li>
+                <li><strong>Get Instant Feedback:</strong> See if you're correct and read the explanation</li>
+                <li><strong>Learn & Progress:</strong> Understand WHY you got it right or wrong</li>
+                <li><strong>View Final Score:</strong> See your percentage and personalized feedback</li>
+            </ol>
+        </div>
+
+        <footer>
+            <p>📚 Science Quiz Portal | Grade 7 Units 1-6 | Learn. Challenge. Master. 🚀</p>
+        </footer>
+    </div>
+</body>
+</html>

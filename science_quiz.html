@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 7 Science Quiz - Units 1-5</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 40px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: slideDown 0.6s ease-out;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.4em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        #quizContainer {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 16px;
+            padding: 45px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.5s ease-out;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .unit-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-number {
+            font-size: 3.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.6em;
+            line-height: 1.7;
+            margin-bottom: 35px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .reveal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .reveal-btn:active {
+            transform: translateY(0);
+        }
+
+        .reveal-btn.revealed {
+            background: #f0f0f0;
+            color: #333;
+            cursor: default;
+        }
+
+        .reveal-btn.revealed:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .answer {
+            display: none;
+            margin-top: 25px;
+            padding: 25px;
+            background: #f8f9ff;
+            border-left: 6px solid #667eea;
+            border-radius: 8px;
+            animation: slideDown 0.4s ease-out;
+            line-height: 1.8;
+            color: #444;
+            font-size: 1.2em;
+        }
+
+        .answer.show {
+            display: block;
+        }
+
+        .answer-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1.15em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        button.nav-btn {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 14px 35px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        button.nav-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        button.nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button.nav-btn:disabled:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .completion {
+            text-align: center;
+            padding: 60px 50px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: zoomIn 0.5s ease-out;
+            max-width: 800px;
+        }
+
+        .completion-icon {
+            font-size: 6em;
+            margin-bottom: 20px;
+        }
+
+        .completion h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 2.8em;
+        }
+
+        .completion p {
+            color: #666;
+            font-size: 1.3em;
+            line-height: 1.8;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .score-display {
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: 700;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 Science Quiz</h1>
+            <p class="subtitle">Grade 7 — Units 1–5</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </header>
+
+        <div id="quizContainer"></div>
+        <div id="completionContainer" class="hidden"></div>
+
+        <div class="controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousQuestion()">← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                unit: "Unit 1",
+                number: 1,
+                question: "What is the SI unit of length, and which instrument would you use to measure the length of your classroom?",
+                answer: "<div class='answer-title'>Answer:</div>The SI unit of length is the <strong>metre (m)</strong>. To measure the length of a classroom, you would use a <strong>measuring tape</strong> or a <strong>100 cm laboratory rule</strong>, depending on the length."
+            },
+            {
+                unit: "Unit 1",
+                number: 2,
+                question: "Describe the displacement method for finding the volume of an irregular object (e.g., a stone).",
+                answer: "<div class='answer-title'>Answer:</div>The displacement method involves: (1) filling a measuring cylinder with a known volume of water, (2) carefully placing the irregular object into the water, (3) recording the new water level, and (4) subtracting the initial volume from the final volume to find the object's volume."
+            },
+            {
+                unit: "Unit 1",
+                number: 3,
+                question: "Which instrument is used to measure (a) mass, (b) time, and (c) temperature?",
+                answer: "<div class='answer-title'>Answer:</div><strong>(a) Mass:</strong> Digital balance<br><strong>(b) Time:</strong> Stopwatch<br><strong>(c) Temperature:</strong> Mercury thermometer or digital thermometer"
+            },
+            {
+                unit: "Unit 1",
+                number: 4,
+                question: "A rectangular table is 1.5 m long and 0.8 m wide. Calculate its area, and give the correct unit.",
+                answer: "<div class='answer-title'>Answer:</div>Area = length × width = 1.5 m × 0.8 m = <strong>1.2 m²</strong> (square metres)"
+            },
+            {
+                unit: "Unit 2",
+                number: 5,
+                question: "Why can't a cell be seen with the naked eye, and what instrument is used to observe one?",
+                answer: "<div class='answer-title'>Answer:</div>Cells are too small to be seen with the naked eye because they are microscopic (typically 10–100 micrometres). A <strong>light microscope</strong> is used to magnify cells so they can be observed."
+            },
+            {
+                unit: "Unit 2",
+                number: 6,
+                question: "State the function of each: (a) cell membrane, (b) nucleus, (c) cytoplasm.",
+                answer: "<div class='answer-title'>Answer:</div><strong>(a) Cell membrane:</strong> Controls what enters and leaves the cell<br><strong>(b) Nucleus:</strong> Controls cell activities and stores genetic information<br><strong>(c) Cytoplasm:</strong> Contains the cell's organelles and is where chemical reactions occur"
+            },
+            {
+                unit: "Unit 2",
+                number: 7,
+                question: "Name two structures found in a plant cell but not in an animal cell.",
+                answer: "<div class='answer-title'>Answer:</div><strong>Cell wall</strong> and <strong>central vacuole</strong> (or chloroplasts for green plant cells). The cell wall provides structural support, and the central vacuole stores water and maintains cell rigidity."
+            },
+            {
+                unit: "Unit 2",
+                number: 8,
+                question: "Put these in the correct order of organisation, smallest to largest: organ, cell, organism, tissue.",
+                answer: "<div class='answer-title'>Answer:</div><strong>Cell → Tissue → Organ → Organism</strong><br>(A cell is the smallest unit of life; tissues are groups of similar cells; organs are made of tissues; organisms are complete living things)"
+            },
+            {
+                unit: "Unit 3",
+                number: 9,
+                question: "Give the two properties that define matter.",
+                answer: "<div class='answer-title'>Answer:</div>Matter has: (1) <strong>mass</strong> and (2) <strong>occupies space</strong> (or volume). Anything that has mass and takes up space is considered matter."
+            },
+            {
+                unit: "Unit 3",
+                number: 10,
+                question: "Name the three states of matter and give one everyday example of each.",
+                answer: "<div class='answer-title'>Answer:</div><strong>Solid:</strong> Has a fixed shape and volume (e.g., ice, wood, metal)<br><strong>Liquid:</strong> Has a fixed volume but takes the shape of its container (e.g., water, milk)<br><strong>Gas:</strong> Has no fixed shape or volume; spreads out to fill its container (e.g., air, oxygen)"
+            },
+            {
+                unit: "Unit 3",
+                number: 11,
+                question: "What is the name of the change of state when (a) a solid becomes a liquid, and (b) a liquid becomes a gas?",
+                answer: "<div class='answer-title'>Answer:</div><strong>(a) Melting:</strong> When a solid becomes a liquid (e.g., ice melting into water)<br><strong>(b) Evaporation:</strong> When a liquid becomes a gas (e.g., water becoming steam)"
+            },
+            {
+                unit: "Unit 3",
+                number: 12,
+                question: "Explain why changes of state are described as physical changes and not chemical changes.",
+                answer: "<div class='answer-title'>Answer:</div>Changes of state are physical changes because the substance itself does not change—only its form or state changes. The particles remain the same; only their arrangement and movement differ. No new substance is formed."
+            },
+            {
+                unit: "Unit 4",
+                number: 13,
+                question: "What is an element? Why could the ancient metals not be broken down into other substances?",
+                answer: "<div class='answer-title'>Answer:</div>An <strong>element</strong> is a substance that cannot be broken down into simpler substances. Ancient metals could not be broken down because they are elements themselves—they consist of only one type of atom and have a fixed structure that cannot be decomposed through ordinary means."
+            },
+            {
+                unit: "Unit 4",
+                number: 14,
+                question: "The table that classifies all the elements is called the ______.",
+                answer: "<div class='answer-title'>Answer:</div>The <strong>Periodic Table</strong> is the table that classifies all known elements. It organizes elements by their properties and atomic structure."
+            },
+            {
+                unit: "Unit 4",
+                number: 15,
+                question: "State two differences between a metal and a non-metal (think appearance and electrical conduction).",
+                answer: "<div class='answer-title'>Answer:</div><strong>Metals:</strong> Shiny, malleable (can be hammered), ductile (can be drawn into wires), conduct electricity and heat well (e.g., copper, iron)<br><strong>Non-metals:</strong> Dull, brittle, do not conduct electricity or heat well (e.g., oxygen, carbon)"
+            },
+            {
+                unit: "Unit 4",
+                number: 16,
+                question: "Distinguish between a compound and a mixture, giving one example of each.",
+                answer: "<div class='answer-title'>Answer:</div><strong>Compound:</strong> Two or more elements chemically bonded together, forming a new substance with different properties (e.g., water = H₂O, salt = NaCl)<br><strong>Mixture:</strong> Two or more substances physically combined, keeping their original properties (e.g., salt and sand, air)"
+            },
+            {
+                unit: "Unit 5",
+                number: 17,
+                question: "List the eight planets of the solar system in order from the Sun.",
+                answer: "<div class='answer-title'>Answer:</div><strong>1. Mercury 2. Venus 3. Earth 4. Mars 5. Jupiter 6. Saturn 7. Uranus 8. Neptune</strong><br>(Mnemonic: My Very Educated Mother Just Showed Us Nine Planets — but Pluto was reclassified, so now it's eight!)"
+            },
+            {
+                unit: "Unit 5",
+                number: 18,
+                question: "Which is the only known planet that supports life, and what makes its position special?",
+                answer: "<div class='answer-title'>Answer:</div><strong>Earth</strong> is the only known planet supporting life. Its special position is in the <strong>'Goldilocks Zone'</strong>—it is at the right distance from the Sun to have liquid water, a protective atmosphere, and moderate temperatures ideal for life."
+            },
+            {
+                unit: "Unit 5",
+                number: 19,
+                question: "State the law of conservation of energy.",
+                answer: "<div class='answer-title'>Answer:</div>The <strong>law of conservation of energy</strong> states that energy cannot be created or destroyed; it can only be transformed from one form to another. The total amount of energy in a closed system remains constant."
+            },
+            {
+                unit: "Unit 5",
+                number: 20,
+                question: "Classify these energy sources as renewable or non-renewable: solar, coal, wind, oil.",
+                answer: "<div class='answer-title'>Answer:</div><strong>Renewable:</strong> Solar, wind (can be replenished naturally)<br><strong>Non-renewable:</strong> Coal, oil (fossil fuels that take millions of years to form and will eventually run out)"
+            }
+        ];
+
+        let currentQuestion = 0;
+
+        function renderQuestion() {
+            const quiz = quizData[currentQuestion];
+            const quizContainer = document.getElementById('quizContainer');
+            quizContainer.innerHTML = `
+                <div class="quiz-card">
+                    <span class="unit-badge">${quiz.unit}</span>
+                    <div class="question-number">Q${quiz.number}</div>
+                    <div class="question-text">${quiz.question}</div>
+                    <button class="reveal-btn" onclick="revealAnswer(this)">Reveal Answer</button>
+                    <div class="answer">${quiz.answer}</div>
+                </div>
+            `;
+            updateProgress();
+            updateButtons();
+        }
+
+        function revealAnswer(btn) {
+            const answer = btn.nextElementSibling;
+            answer.classList.add('show');
+            btn.classList.add('revealed');
+            btn.textContent = 'Answer Revealed';
+            btn.disabled = true;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+                window.scrollTo(0, 0);
+            } else {
+                showCompletion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = 
+                currentQuestion === quizData.length - 1 ? 'Finish' : 'Next →';
+        }
+
+        function showCompletion() {
+            document.getElementById('quizContainer').innerHTML = '';
+            const completionContainer = document.getElementById('completionContainer');
+            completionContainer.innerHTML = `
+                <div class="completion">
+                    <div class="completion-icon">🎉</div>
+                    <h2>Quiz Complete!</h2>
+                    <p>You've successfully reviewed all 20 questions covering Units 1–5 of Grade 7 Science.</p>
+                    <p style="margin-top: 20px; font-size: 0.95em; color: #888;">Take your time to study the answers and make sure you understand each concept. Great effort!</p>
+                    <button class="nav-btn" onclick="restartQuiz()" style="margin-top: 20px; width: auto;">Start Over</button>
+                </div>
+            `;
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            document.getElementById('completionContainer').innerHTML = '';
+            renderQuestion();
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        // Initialize
+        renderQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Science Quiz - Units 1-6 (50 Questions)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 25px;
+            animation: slideDown 0.6s ease-out;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px 25px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        #quizContainer {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            margin: 20px 0;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 16px;
+            padding: 45px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.5s ease-out;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .unit-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-type {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .question-number {
+            font-size: 3.2em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.5em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+            font-size: 1.1em;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f5ff;
+            transform: translateX(5px);
+        }
+
+        .option input[type="radio"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 18px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .option.correct {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+        }
+
+        .option.incorrect {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+
+        .fill-input {
+            font-size: 1.1em;
+            padding: 14px 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            margin-bottom: 25px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .fill-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .fill-input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .feedback-section {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 10px;
+            display: none;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        .feedback-section.show {
+            display: block;
+        }
+
+        .feedback-correct {
+            background: #e8f5e9;
+            border-left: 6px solid #4CAF50;
+        }
+
+        .feedback-incorrect {
+            background: #ffebee;
+            border-left: 6px solid #f44336;
+        }
+
+        .feedback-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-correct .feedback-title {
+            color: #2e7d32;
+        }
+
+        .feedback-incorrect .feedback-title {
+            color: #c62828;
+        }
+
+        .feedback-text {
+            font-size: 1.1em;
+            line-height: 1.7;
+            color: #333;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            font-style: italic;
+            color: #555;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 14px 35px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05em;
+        }
+
+        .nav-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .completion {
+            text-align: center;
+            padding: 60px 50px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: zoomIn 0.5s ease-out;
+            max-width: 800px;
+        }
+
+        .completion-icon {
+            font-size: 6em;
+            margin-bottom: 20px;
+        }
+
+        .completion h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 2.8em;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            margin: 30px 0;
+            font-size: 1.4em;
+        }
+
+        .score-percentage {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .score-feedback {
+            font-size: 1.3em;
+            margin-top: 15px;
+            opacity: 0.9;
+        }
+
+        .completion p {
+            color: #666;
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin: 15px 0;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05em;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            h1 { font-size: 2.2em; }
+            .quiz-card { padding: 30px; }
+            .header-stats { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 Science Quiz</h1>
+            <p class="subtitle">Grade 7 — Units 1–6 (50 Questions)</p>
+            <div class="header-stats">
+                <div class="stat-box">
+                    <div class="stat-label">Question</div>
+                    <div class="stat-value"><span id="currentQuestion">1</span>/50</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value"><span id="currentScore">0</span></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Percentage</div>
+                    <div class="stat-value"><span id="percentage">0</span>%</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </header>
+
+        <div id="quizContainer"></div>
+
+        <div class="controls">
+            <button class="nav-btn" id="prevBtn" onclick="previousQuestion()">← Previous</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextQuestion()" style="display:none;">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            // UNIT 1: Measurement (9 questions - DIFFERENT PACK)
+            { unit: "Unit 1", number: 1, type: "MC", question: "What does SI stand for?", options: ["Scientific Investigation", "System International", "Système International", "Science and Industry"], correct: 2, explanation: "SI stands for 'Système International d'unités' (International System of Units), which is the standardized system used worldwide." },
+            { unit: "Unit 1", number: 2, type: "MC", question: "If a table is 150 cm long, how long is it in metres?", options: ["1.5 m", "15 m", "0.15 m", "1500 m"], correct: 0, explanation: "1 metre = 100 centimetres, so 150 cm ÷ 100 = 1.5 m" },
+            { unit: "Unit 1", number: 3, type: "FIB", question: "The _______ is the SI unit of mass.", answer: "kilogram", explanation: "The kilogram (kg) is the SI base unit for measuring mass." },
+            { unit: "Unit 1", number: 4, type: "MC", question: "Which instrument has the greatest precision for measuring small lengths?", options: ["Metre ruler", "Measuring tape", "Vernier calliper", "Tape measure"], correct: 2, explanation: "Vernier callipers can measure to 0.1 mm precision, much more accurate than regular rulers." },
+            { unit: "Unit 1", number: 5, type: "FIB", question: "A _______ is used to measure the volume of liquids.", answer: "measuring cylinder", explanation: "A measuring cylinder allows you to read the volume of liquids accurately." },
+            { unit: "Unit 1", number: 6, type: "MC", question: "What is the formula for calculating density?", options: ["Density = mass × volume", "Density = mass ÷ volume", "Density = volume ÷ mass", "Density = mass + volume"], correct: 1, explanation: "Density is calculated as mass divided by volume (ρ = m/V)." },
+            { unit: "Unit 1", number: 7, type: "MC", question: "A stone with a mass of 50 g is placed in a measuring cylinder. Water level rises from 20 cm³ to 30 cm³. What is its volume?", options: ["20 cm³", "30 cm³", "10 cm³", "50 cm³"], correct: 2, explanation: "Volume = final reading - initial reading = 30 cm³ - 20 cm³ = 10 cm³" },
+            { unit: "Unit 1", number: 8, type: "FIB", question: "The SI unit of temperature is the _______.", answer: "Kelvin", explanation: "The Kelvin (K) is the SI unit for temperature, though Celsius is commonly used." },
+            { unit: "Unit 1", number: 9, type: "MC", question: "Why is accuracy important in scientific measurements?", options: ["To save time", "To ensure reliable and valid results", "To impress people", "To use less equipment"], correct: 1, explanation: "Accurate measurements are essential for conducting valid scientific experiments and drawing correct conclusions." },
+
+            // UNIT 2: Cells (9 questions - DIFFERENT PACK)
+            { unit: "Unit 2", number: 10, type: "MC", question: "Which cell structure is responsible for energy production?", options: ["Chloroplast", "Mitochondrion", "Ribosome", "Golgi apparatus"], correct: 1, explanation: "Mitochondria are called the 'powerhouses of cells' because they produce energy (ATP) through cellular respiration." },
+            { unit: "Unit 2", number: 11, type: "FIB", question: "Plant cells contain _______ which give them their green colour.", answer: "chloroplasts", explanation: "Chloroplasts contain chlorophyll, which absorbs light and gives plants their green appearance." },
+            { unit: "Unit 2", number: 12, type: "MC", question: "What is the main function of ribosomes?", options: ["Store energy", "Make proteins", "Break down waste", "Transport materials"], correct: 1, explanation: "Ribosomes are sites of protein synthesis where amino acids are assembled into proteins." },
+            { unit: "Unit 2", number: 13, type: "FIB", question: "The _______ is a membrane-bound structure in the nucleus that contains DNA.", answer: "chromosome", explanation: "Chromosomes are structures made of DNA and proteins found in the nucleus." },
+            { unit: "Unit 2", number: 14, type: "MC", question: "Which structure controls what enters and leaves the cell?", options: ["Nucleus", "Cell membrane", "Cell wall", "Mitochondrion"], correct: 1, explanation: "The cell (plasma) membrane is selectively permeable and controls the passage of substances." },
+            { unit: "Unit 2", number: 15, type: "MC", question: "What do lysosomes contain?", options: ["Genetic material", "Digestive enzymes", "Proteins for structure", "Chlorophyll"], correct: 1, explanation: "Lysosomes contain digestive enzymes that break down waste material and debris." },
+            { unit: "Unit 2", number: 16, type: "FIB", question: "The _______ is a large membrane-bound sac in plant cells that stores water, nutrients, and waste.", answer: "vacuole", explanation: "Plant cell vacuoles maintain turgor pressure and store important substances." },
+            { unit: "Unit 2", number: 17, type: "MC", question: "Which organelle makes proteins according to instructions from the nucleus?", options: ["Mitochondrion", "Chloroplast", "Ribosome", "Lysosome"], correct: 2, explanation: "Ribosomes read mRNA from the nucleus and synthesize proteins accordingly." },
+            { unit: "Unit 2", number: 18, type: "MC", question: "Why do nerve cells have many mitochondria?", options: ["To store water", "To produce large amounts of energy needed for their activity", "To absorb light", "To store nutrients"], correct: 1, explanation: "Nerve cells (neurons) are highly active and require lots of ATP energy, so they have many mitochondria." },
+
+            // UNIT 3: Matter (9 questions - DIFFERENT PACK)
+            { unit: "Unit 3", number: 19, type: "MC", question: "What happens to the speed of particle movement when matter is heated?", options: ["Decreases", "Increases", "Stays the same", "Becomes zero"], correct: 1, explanation: "Heat energy increases the kinetic energy of particles, causing them to move faster." },
+            { unit: "Unit 3", number: 20, type: "FIB", question: "The change of state from liquid to solid is called _______.", answer: "freezing", explanation: "Freezing occurs when a liquid loses heat and becomes a solid." },
+            { unit: "Unit 3", number: 21, type: "MC", question: "At what temperature does ice melt under normal pressure?", options: ["0°C", "100°C", "-273°C", "37°C"], correct: 0, explanation: "Ice melts at 0°C (or 273 K) under standard atmospheric pressure." },
+            { unit: "Unit 3", number: 22, type: "FIB", question: "The temperature at which a liquid boils is called its _______.", answer: "boiling point", explanation: "The boiling point is the temperature at which a liquid turns to gas (100°C for water at 1 atm)." },
+            { unit: "Unit 3", number: 23, type: "MC", question: "Which process is a physical change?", options: ["Burning wood", "Rusting iron", "Melting ice", "Digestion"], correct: 2, explanation: "Melting is a physical change because the substance remains ice/water, just in different states." },
+            { unit: "Unit 3", number: 24, type: "MC", question: "What is the density of water at 4°C?", options: ["0.92 g/cm³", "1.0 g/cm³", "1.2 g/cm³", "0.80 g/cm³"], correct: 1, explanation: "Water has a density of 1.0 g/cm³ (or 1000 kg/m³) at 4°C, which is its maximum density." },
+            { unit: "Unit 3", number: 25, type: "FIB", question: "The process where particles escape from the surface of a liquid into the gas phase is called _______.", answer: "evaporation", explanation: "Evaporation happens when water particles gain enough energy to escape as gas." },
+            { unit: "Unit 3", number: 26, type: "MC", question: "In a solid, particles are arranged in a _______ pattern.", options: ["Random", "Loose", "Regular, fixed", "Flexible"], correct: 2, explanation: "Solid particles are arranged in a fixed, orderly crystalline or amorphous structure." },
+            { unit: "Unit 3", number: 27, type: "MC", question: "Why does a gas have no definite shape or volume?", options: ["Particles are stuck together", "Particles move freely and spread out", "There is no kinetic energy", "Particles are stationary"], correct: 1, explanation: "Gas particles move rapidly and randomly, filling whatever container they're in." },
+
+            // UNIT 4: Elements, Compounds & Mixtures (9 questions - DIFFERENT PACK)
+            { unit: "Unit 4", number: 28, type: "MC", question: "How many elements are currently known?", options: ["92", "118", "100", "150"], correct: 1, explanation: "As of now, 118 elements are known and arranged in the Periodic Table." },
+            { unit: "Unit 4", number: 29, type: "FIB", question: "A _______ is formed when two or more elements combine chemically.", answer: "compound", explanation: "Compounds are pure substances formed by chemical bonding between different elements." },
+            { unit: "Unit 4", number: 30, type: "MC", question: "What is the chemical formula for carbon dioxide?", options: ["CO", "CO₂", "C₂O", "C₃O₂"], correct: 1, explanation: "Carbon dioxide contains one carbon atom and two oxygen atoms: CO₂" },
+            { unit: "Unit 4", number: 31, type: "FIB", question: "Metals are typically good _______ of heat and electricity.", answer: "conductors", explanation: "Metals have free electrons that allow them to conduct heat and electricity efficiently." },
+            { unit: "Unit 4", number: 32, type: "MC", question: "Which of these is a non-metal?", options: ["Copper", "Iron", "Sulfur", "Silver"], correct: 2, explanation: "Sulfur is a non-metal element. Copper, iron, and silver are all metals." },
+            { unit: "Unit 4", number: 33, type: "MC", question: "How can you separate a salt-sand mixture?", options: ["Magnets", "Water and evaporation", "Heating only", "Freezing"], correct: 1, explanation: "Add water to dissolve salt, filter to remove sand, then evaporate to recover the salt." },
+            { unit: "Unit 4", number: 34, type: "FIB", question: "In a _______, the substances can be separated by physical methods like filtration or evaporation.", answer: "mixture", explanation: "Mixtures retain the properties of their components and can be separated physically." },
+            { unit: "Unit 4", number: 35, type: "MC", question: "Which is an example of a pure substance?", options: ["Soil", "Seawater", "Distilled water", "Milk"], correct: 2, explanation: "Distilled water is a pure compound (H₂O). The others are mixtures." },
+            { unit: "Unit 4", number: 36, type: "MC", question: "What is the symbol for the element Oxygen?", options: ["O", "Ox", "O₂", "Ogn"], correct: 0, explanation: "Oxygen's element symbol is 'O'. Note: O₂ is the molecular form (two oxygen atoms bonded)." },
+
+            // UNIT 5: Solar System & Energy (7 questions - DIFFERENT PACK)
+            { unit: "Unit 5", number: 37, type: "MC", question: "How far is Earth from the Sun approximately?", options: ["93 million km", "150 million km", "300 million km", "1 million km"], correct: 0, explanation: "Earth orbits the Sun at about 93 million miles (150 million kilometres), called 1 AU." },
+            { unit: "Unit 5", number: 38, type: "FIB", question: "The largest planet in the solar system is _______.", answer: "Jupiter", explanation: "Jupiter is a gas giant and the largest planet by far in our solar system." },
+            { unit: "Unit 5", number: 39, type: "MC", question: "Which planet has the most prominent ring system?", options: ["Jupiter", "Uranus", "Saturn", "Neptune"], correct: 2, explanation: "Saturn is famous for its spectacular system of rings made of ice and rock." },
+            { unit: "Unit 5", number: 40, type: "FIB", question: "The _______ is the center of our solar system and provides light and heat to all planets.", answer: "Sun", explanation: "The Sun's gravity holds the planets in orbit and provides thermal and light energy." },
+            { unit: "Unit 5", number: 41, type: "MC", question: "Which type of energy is stored in a stretched spring?", options: ["Kinetic", "Thermal", "Potential", "Chemical"], correct: 2, explanation: "A stretched spring has elastic potential energy stored in its deformation." },
+            { unit: "Unit 5", number: 42, type: "MC", question: "What is a renewable energy source?", options: ["Coal", "Natural gas", "Solar power", "Oil"], correct: 2, explanation: "Solar power comes from the Sun which continuously radiates energy—it's renewable and clean." },
+            { unit: "Unit 5", number: 43, type: "FIB", question: "_______ is the energy an object has due to its motion.", answer: "Kinetic energy", explanation: "Kinetic energy (KE = ½mv²) depends on the mass and velocity of a moving object." },
+
+            // UNIT 6: Ecosystem (7 questions - DIFFERENT PACK)
+            { unit: "Unit 6", number: 44, type: "MC", question: "Which organism produces its own food through photosynthesis?", options: ["Consumer", "Producer", "Decomposer", "Predator"], correct: 1, explanation: "Producers (plants) make their own food using sunlight, water, and CO₂." },
+            { unit: "Unit 6", number: 45, type: "FIB", question: "An organism that eats only meat is called a _______.", answer: "carnivore", explanation: "Carnivores are meat-eating animals like lions, hawks, and snakes." },
+            { unit: "Unit 6", number: 46, type: "MC", question: "In the food chain: Plant → Grasshopper → Bird → Cat. What does the bird represent?", options: ["Producer", "Primary consumer", "Secondary consumer", "Decomposer"], correct: 2, explanation: "The bird eats the grasshopper (primary consumer), making the bird a secondary consumer." },
+            { unit: "Unit 6", number: 47, type: "FIB", question: "The _______ is the total amount of energy available at each level of a food chain.", answer: "energy pyramid", explanation: "The energy pyramid shows that energy decreases as we move up food chain levels." },
+            { unit: "Unit 6", number: 48, type: "MC", question: "Which human activity directly damages ecosystems?", options: ["Recycling plastic", "Using renewable energy", "Habitat destruction", "Planting forests"], correct: 2, explanation: "Deforestation, pollution, and land development destroy natural habitats and ecosystems." },
+            { unit: "Unit 6", number: 49, type: "FIB", question: "A _______ is a relationship where one organism benefits and the other is harmed.", answer: "parasitism", explanation: "In parasitism, the parasite benefits while the host is harmed (like ticks on animals)." },
+            { unit: "Unit 6", number: 50, type: "MC", question: "Why is biodiversity important to an ecosystem?", options: ["It looks nice", "It provides stability and resilience against changes", "It takes up space", "It has no real importance"], correct: 1, explanation: "High biodiversity makes ecosystems more stable and able to recover from disturbances." }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = new Array(50).fill(false);
+
+        function renderQuestion() {
+            const quiz = quizData[currentQuestion];
+            const quizContainer = document.getElementById('quizContainer');
+            let questionHTML = `
+                <div class="quiz-card">
+                    <div class="quiz-header">
+                        <span class="unit-badge">${quiz.unit}</span>
+                        <span class="question-type">${quiz.type}</span>
+                    </div>
+                    <div class="question-number">Q${quiz.number}</div>
+                    <div class="question-text">${quiz.question}</div>
+            `;
+
+            if (quiz.type === "MC") {
+                questionHTML += '<div class="options">';
+                quiz.options.forEach((option, idx) => {
+                    questionHTML += `
+                        <label class="option">
+                            <input type="radio" name="answer" value="${idx}">
+                            ${option}
+                        </label>
+                    `;
+                });
+                questionHTML += '</div>';
+            } else if (quiz.type === "FIB") {
+                questionHTML += `
+                    <input type="text" class="fill-input" placeholder="Type your answer here...">
+                `;
+            }
+
+            questionHTML += `
+                <button class="submit-btn" onclick="submitAnswer()">Submit Answer</button>
+                <div class="feedback-section" id="feedback"></div>
+            </div>
+            `;
+
+            quizContainer.innerHTML = questionHTML;
+            updateProgress();
+            updateButtons();
+        }
+
+        function submitAnswer() {
+            const quiz = quizData[currentQuestion];
+            const feedbackDiv = document.getElementById('feedback');
+            let isCorrect = false;
+            let userAnswer = '';
+
+            if (quiz.type === "MC") {
+                const selected = document.querySelector('input[name="answer"]:checked');
+                if (!selected) {
+                    alert('Please select an option!');
+                    return;
+                }
+                userAnswer = parseInt(selected.value);
+                isCorrect = userAnswer === quiz.correct;
+                
+                // Highlight options
+                document.querySelectorAll('.option').forEach((opt, idx) => {
+                    if (idx === quiz.correct) {
+                        opt.classList.add('correct');
+                    } else if (idx === userAnswer && !isCorrect) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+                document.querySelector('.submit-btn').disabled = true;
+            } else if (quiz.type === "FIB") {
+                const input = document.querySelector('.fill-input');
+                userAnswer = input.value.toLowerCase().trim();
+                isCorrect = userAnswer === quiz.answer.toLowerCase().trim();
+                input.disabled = true;
+                document.querySelector('.submit-btn').disabled = true;
+            }
+
+            // Show feedback
+            if (isCorrect) {
+                score++;
+                feedbackDiv.classList.add('feedback-correct', 'show');
+                feedbackDiv.innerHTML = `
+                    <div class="feedback-title">✅ Correct!</div>
+                    <div class="feedback-text">
+                        ${quiz.explanation}
+                    </div>
+                `;
+            } else {
+                feedbackDiv.classList.add('feedback-incorrect', 'show');
+                let correctAnswerText = quiz.correct;
+                if (quiz.type === "MC") {
+                    correctAnswerText = quiz.options[quiz.correct];
+                } else {
+                    correctAnswerText = quiz.answer;
+                }
+                feedbackDiv.innerHTML = `
+                    <div class="feedback-title">❌ Incorrect</div>
+                    <div class="feedback-text">
+                        Correct answer: <strong>${correctAnswerText}</strong>
+                        <div class="explanation">${quiz.explanation}</div>
+                    </div>
+                `;
+            }
+
+            answered[currentQuestion] = true;
+            updateScore();
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function updateScore() {
+            document.getElementById('currentScore').textContent = score;
+            const percentage = Math.round((score / (currentQuestion + 1)) * 100);
+            document.getElementById('percentage').textContent = percentage;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            } else {
+                showCompletion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+                window.scrollTo(0, 0);
+                document.getElementById('nextBtn').style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / 50) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentQuestion').textContent = currentQuestion + 1;
+        }
+
+        function updateButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+        }
+
+        function showCompletion() {
+            const percentage = Math.round((score / 50) * 100);
+            let feedback = '';
+            if (percentage >= 90) feedback = '🌟 Excellent! Outstanding performance!';
+            else if (percentage >= 80) feedback = '🎉 Great job! You have a strong understanding!';
+            else if (percentage >= 70) feedback = '👍 Good effort! You\'re on the right track!';
+            else if (percentage >= 60) feedback = '📚 Keep practicing! Review the concepts!';
+            else feedback = '💪 Don\'t give up! Study harder!';
+
+            document.getElementById('quizContainer').innerHTML = `
+                <div class="completion">
+                    <div class="completion-icon">🏆</div>
+                    <h2>Quiz Complete!</h2>
+                    <div class="score-display">
+                        <div>Final Score</div>
+                        <div class="score-percentage">${score}/50</div>
+                        <div>${percentage}%</div>
+                        <div class="score-feedback">${feedback}</div>
+                    </div>
+                    <p>You've successfully completed all 50 questions!</p>
+                    <div class="export-buttons">
+                        <button class="export-btn" onclick="exportResults()">📄 Export Results</button>
+                    </div>
+                    <button class="nav-btn" onclick="location.reload()" style="margin-top: 20px; width: auto;">Start Over</button>
+                </div>
+            `;
+            document.getElementById('prevBtn').disabled = true;
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function exportResults() {
+            const results = `GRADE 7 SCIENCE QUIZ - FINAL RESULTS\n\nFinal Score: ${score}/50\nPercentage: ${Math.round((score/50)*100)}%\n\nYou completed the quiz with instant feedback and explanations for each question.\nUnits covered: 1 (Measurement), 2 (Cells), 3 (Matter), 4 (Elements/Compounds/Mixtures), 5 (Solar System), 6 (Ecosystem)`;
+            
+            const blob = new Blob([results], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'Science_Quiz_Results.txt';
+            link.click();
+        }
+
+        // Initialize
+        renderQuestion();
+    </script>
+</body>
+</html>
